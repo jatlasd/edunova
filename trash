@@ -1,0 +1,33 @@
+// pages/api/login.js
+import dbConnect from '../../lib/mongodb';
+import User from '../../models/User';
+import { serialize } from 'cookie';
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).end(); // Method Not Allowed
+  }
+
+  await dbConnect();
+
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Create a session cookie
+    const cookie = serialize('userToken', user._id.toString(), {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24, // 1 day
+      path: '/',
+    });
+
+    res.setHeader('Set-Cookie', cookie);
+    res.status(200).json({ message: 'Login successful', userId: user._id });
+  } catch (error) {
+    res.status(400).json({ error: 'Login failed' });
+  }
+}

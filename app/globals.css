@@ -2,32 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.bg-gradient {
+  background: rgb(38, 166, 154);
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    0deg,
+    rgba(38, 166, 154, 0.8250759776566876) 0%,
+    rgba(255, 255, 255, 1) 42%
+  );
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .text-10 {
+    @apply text-[10px] leading-[14px];
+  }
+
+  .text-12 {
+    @apply text-[12px] leading-[16px];
+  }
+
+  .text-14 {
+    @apply text-[14px] leading-[20px];
+  }
+
+  .text-16 {
+    @apply text-[16px] leading-[24px];
+  }
+
+  .text-18 {
+    @apply text-[18px] leading-[22px];
+  }
+
+  .text-20 {
+    @apply text-[20px] leading-[24px];
+  }
+
+  .text-24 {
+    @apply text-[24px] leading-[30px];
+  }
+
+  .text-26 {
+    @apply text-[26px] leading-[32px];
+  }
+
+  .text-30 {
+    @apply text-[30px] leading-[38px];
+  }
+
+  .text-36 {
+    @apply text-[36px] leading-[44px];
+  }
+
+  .input-class {
+    @apply text-16 placeholder:text-16 rounded-lg border border-gray-300 bg-white-1 text-gray-900;
+  }
+
+  .form-label {
+    @apply text-16 w-full max-w-[280px] font-bold text-primary-tint;
+  }
+
+  .form-message {
+    @apply text-12 pt-2 text-primary;
+  }
+
+  .form-btn {
+    @apply text-16 h-10 rounded-lg bg-primary px-4 py-2 font-semibold text-white-1 shadow-lg transition-all duration-100 hover:bg-primary-tint;
+  }
+
+  .nav-btn {
+    @apply cursor-pointer rounded-md bg-primary px-4 py-2 font-semibold text-white-1 hover:bg-primary-tint;
+  }
+
+  .nav-link {
+    @apply mx-5 text-base font-semibold text-primary transition-all duration-100 hover:text-primary-tint;
+  }
+
+  .nav-link-active {
+    @apply font-bold text-primary-tint;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #333 !important;
   }
 }
