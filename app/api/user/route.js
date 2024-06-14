@@ -18,3 +18,14 @@ export const POST = async (request) => {
         return new Response('Failed to add new user', { status: 500 })
     }
 }
+
+export const GET = async (request) => {
+    await connectToDB()
+    try {
+        const users = await User.find()
+        return new Response(JSON.stringify(users), { status: 200 })
+    } catch (error) {
+        return new Response('Failed to fetch users', { status: 500 })
+    }
+
+}

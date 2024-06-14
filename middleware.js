@@ -4,7 +4,6 @@ export const middleware = async (req) => {
   const { pathname } = req.nextUrl;
   const cookie = req.cookies.get("userToken");
 
-  console.log("Cookie value:", cookie.value);
   if (!cookie) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
@@ -23,6 +22,9 @@ export const middleware = async (req) => {
 
   const protectedRoutes = {
     "/manage": ["admin", "super"],
+    "/dashboard": ["admin", "super", "user"],
+    "/students": ["admin", "super", "user"],
+    "/sessions": ["admin", "super", "user"],
   };
 
   for (const route in protectedRoutes) {
@@ -39,5 +41,5 @@ export const middleware = async (req) => {
 };
 
 export const config = {
-  matcher: "/manage",
+  matcher: ["/manage/:path*", "/dashboard", "/students", "/sessions"],
 };

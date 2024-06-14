@@ -1,17 +1,17 @@
+"use client"
+
 import { useGlobalContext } from "@/lib/GlobalProvider";
 
 const Header = () => {
-    const { user, isLoading, logout } = useGlobalContext()
-  return (
-    <div className="w-full">
-        {isLoading ? (''):(
-            <div>
-                <h1 className="font-extrabold text-5xl text-nyanza">Hello {user ? user.name : 'Stranger'}</h1>
-                <button className="bg-tangerine text-xl px-4 py-2 rounded-md" onClick={logout}>Logout</button>
-            </div>
-        )}
-    </div>
-  )
+    const { user } = useGlobalContext();
+    const name = user?.name
+    const firstName = name?.split(' ')[0];
+    return (
+        <div className="flex ml-10">
+            <h1 className="text-4xl font-bold text-black-4">Hello,&nbsp;</h1>
+            <h1 className="text-4xl font-bold text-primary">{firstName}</h1>
+        </div>
+    );
 }
 
-export default Header
+export default Header;

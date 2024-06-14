@@ -26,7 +26,7 @@ const Dashboard = () => {
   return (
     <div>
       <button className='ml-20' onClick={handleButtonClick}>click</button>
-      {/* {students.length !== 0 && <UserTable students={students} />} */}
+      {students.length !== 0 && <UserTable students={students} />}
     </div>
   );
 };

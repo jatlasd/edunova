@@ -8,7 +8,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -25,8 +26,6 @@ main {
   display: flex;
   flex-direction: column;
 }
-
-
 
 .bg-gradient {
   background: rgb(38, 166, 154);
@@ -99,11 +98,15 @@ main {
   }
 
   .nav-link {
-    @apply mx-5 text-base font-semibold text-primary transition-all duration-100 hover:text-primary-tint;
+    @apply hover:bg-primary-clear mx-2 inline-flex h-10 items-center rounded-md px-4 py-2 text-base font-semibold text-primary transition-all duration-100 hover:text-primary-tint;
+  }
+
+  .manage-nav-link {
+    @apply hover:bg-primary-clear row-span-3 h-full w-full select-none justify-center rounded-md px-4 py-2 text-sm font-semibold text-primary hover:text-primary-tint;
   }
 
   .nav-link-active {
-    @apply font-bold text-primary-tint;
+    @apply bg-primary-clear font-bold text-primary-tint;
   }
 
   input:-webkit-autofill,

@@ -71,7 +71,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-full bg-gradient">
+    <div className="flex items-center justify-center h-full">
       <section className="flex w-full max-w-[420px] flex-col gap-5 pt-10 md:gap-8">
         <div className="flex flex-col items-center justify-center mb-8">
           <div className="flex items-center justify-center">

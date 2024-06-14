@@ -5,7 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@lib/utils";
-import { adminNavLinks, userNavLinks } from "@/constants";
+import { navLinks } from "@/constants";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuList,
+  NavigationMenuLink, 
+} from "@/components/ui/navigation-menu";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -26,35 +34,51 @@ const Navbar = () => {
         <div className="mr-10 flex items-center gap-4">
           {isLoggedIn ? (
             <>
-              {user.role === "user"
-                ? userNavLinks.map((link) => {
-                    const isActive = pathname === link.route;
-                    return (
-                      <Link
-                        key={link.name}
-                        href={link.route}
+              {navLinks.map((link) => {
+                const isActive = pathname === link.route;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.route}
+                    className={cn("nav-link", {
+                      "nav-link-active": isActive,
+                    })}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+              {user.role === "admin" && (
+                <NavigationMenu>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger
                         className={cn("nav-link", {
-                          "nav-link-active": isActive,
+                          "nav-link-active":
+                            pathname === "/manage" ||
+                            pathname.startsWith("/manage"),
                         })}
                       >
-                        {link.label}
-                      </Link>
-                    );
-                  })
-                : adminNavLinks.map((link) => {
-                    const isActive = pathname === link.route;
-                    return (
-                      <Link
-                        key={link.name}
-                        href={link.route}
-                        className={cn("nav-link", {
-                          "nav-link-active": isActive,
-                        })}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
+                        Manage
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="w-[170px] gap-5 p-2">
+                          <li className="manage-nav-link">
+                            <NavigationMenuLink>
+                              <a href="/manage/staff">Manage Staff</a>
+                            </NavigationMenuLink>
+                          </li>
+                          <li className="manage-nav-link">
+                            <NavigationMenuLink>
+                              <a href="/manage/students">Manage Students</a>
+                            </NavigationMenuLink>
+                          </li>
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              )}
               <button onClick={logout} className="nav-btn ml-10">
                 Sign Out
               </button>

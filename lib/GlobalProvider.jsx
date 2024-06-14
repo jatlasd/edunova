@@ -28,10 +28,13 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [user]);
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     setIsLoggedIn(false);
     localStorage.removeItem("user");
+
+    // Add this fetch call to clear the cookie
+    await fetch('/api/logout', { method: 'POST' });
   };
 
   return (

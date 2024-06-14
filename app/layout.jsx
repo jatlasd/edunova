@@ -23,7 +23,7 @@ const RootLayout = ({ children }) => {
     <html lang="en" className="h-full">
       <body
         className={cn(
-          "bg-white min-h-screen h-full font-sans antialiased",
+          " bg-gradient min-h-screen h-full font-sans antialiased",
           fontSans.variable,
         )}
       >

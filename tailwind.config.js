@@ -44,6 +44,7 @@ module.exports = {
         "forrest-green": "#33EB4E",
         "primary": "#26A69A",
         "primary-tint": "#1e857b",
+        "primary-clear": "rgba(38, 166, 154, 0.1)",
         "secondary": "#F75C03",
         "gray-accent": "#333",
       },

@@ -1,9 +1,12 @@
-import React from 'react'
+import Header from "@components/Header";
+import React from "react";
 
 const Manage = () => {
   return (
-    <div>Manage</div>
-  )
-}
+    <div className="flex w-3/5 flex-col justify-center">
+      <Header />
+    </div>
+  );
+};
 
-export default Manage
+export default Manage;
