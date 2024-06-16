@@ -2,13 +2,13 @@ import { connectToDB } from "@/lib/database";
 import User from "@/models/user";
 
 export const POST = async (request) => {
-    const { email, password, firstName, lastName } = await request.json();
+    const { email, password, firstName, lastName, role } = await request.json();
     try {
         await connectToDB();
         const user = new User({
             email,
             password,
-            role: 'user',
+            role,
             name: `${firstName} ${lastName}`
         });
         await user.save();
@@ -27,5 +27,5 @@ export const GET = async (request) => {
     } catch (error) {
         return new Response('Failed to fetch users', { status: 500 })
     }
-
 }
+

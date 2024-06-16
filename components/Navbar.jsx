@@ -48,7 +48,7 @@ const Navbar = () => {
                   </Link>
                 );
               })}
-              {user.role === "admin" && (
+              {user.role === "admin" || user.role === 'super' && (
                 <NavigationMenu>
                   <NavigationMenuList>
                     <NavigationMenuItem>
