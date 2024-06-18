@@ -29,14 +29,19 @@ const formSchema = z.object({
     message: "Name is required",
   }),
   student: z.string(),
-  date: z.string(),
+  createdDate: z.string(),
   status: z.string(),
   staff: z.string(),
   behaviors: z.array(
     z.object({
       behavior: z.string(),
       count: z.number(),
-      timestamps: z.array(z.string()),
+      timestamps: z.array(
+        z.object({
+          time: z.string(),
+          notes: z.string()
+        })
+      ),
     }),
   ),
 });
@@ -49,14 +54,15 @@ const CreateSessionDialog = ({ studentId }) => {
     defaultValues: {
       name: "",
       student: studentId,
-      date: new Date().toLocaleDateString("en-US", {
+      createdDate: new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
       }),
+      finishedDate: "",
       status: "Pending",
       staff: "",
-      behaviors: [],
+      behaviors: [{ behavior: "", count: 0, timestamps: [{time: "", notes: ""}]}],
     },
   });
 
@@ -104,7 +110,7 @@ const CreateSessionDialog = ({ studentId }) => {
       behaviors: selectedData.map((behavior) => ({
         behavior: behavior.behavior,
         count: 0,
-        timestamps: [],
+        timestamps: behavior.timestamps && behavior.timestamps.length > 0 ? behavior.timestamps : [],
       })),
     };
 
@@ -129,11 +135,11 @@ const CreateSessionDialog = ({ studentId }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="rounded-md bg-primary px-4 py-2 text-lg font-semibold text-white-1 hover:bg-primary-tint">
+        <button className="px-4 py-2 text-lg font-semibold rounded-md bg-primary text-white-1 hover:bg-primary-tint">
           Create New Session
         </button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className='bg-white-1' onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-xl text-primary-tint">
             Create New Session
@@ -151,7 +157,7 @@ const CreateSessionDialog = ({ studentId }) => {
                 render={({ field }) => (
                   <div className="flex flex-col gap-1.5">
                     <FormLabel className="form-label">Session Name</FormLabel>
-                    <div className="flex w-full flex-col">
+                    <div className="flex flex-col w-full">
                       <FormControl>
                         <Input
                           placeholder="Session Name"
@@ -166,7 +172,7 @@ const CreateSessionDialog = ({ studentId }) => {
               ></FormField>
               {/* Behavior checkboxes */}
               {selectedBehaviors.map((behavior, index) => (
-                <div key={index} className="flex w-1/4 justify-between">
+                <div key={index} className="flex justify-between w-1/4">
                   <FormLabel className="form-label">
                     {behavior.behavior}
                   </FormLabel>

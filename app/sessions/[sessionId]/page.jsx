@@ -1,8 +1,11 @@
-import React from 'react'
+import SessionDetailsContainer from '@components/sessions/SessionDetailsContainer'
 
-const StoredSession = () => {
+const StoredSession = ({params}) => {
+  const { sessionId } = params
   return (
-    <div>StoredSession</div>
+    <div>
+      <SessionDetailsContainer sessionId={sessionId}/>
+    </div>
   )
 }
 

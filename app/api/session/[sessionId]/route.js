@@ -12,10 +12,10 @@ export const GET = async (request, { params }) => {
     if (!session) {
       return new Response("Session not found", { status: 404 });
     }
-    const populatedSession = await session.populate("student", "staff");
+    const populatedSession = await session.populate(["student", "staff"]);
     return new Response(
       JSON.stringify({
-        session: populatedSession,
+        session: session,
         student: populatedSession.student,
         staff: populatedSession.staff,
       }),
@@ -29,21 +29,23 @@ export const GET = async (request, { params }) => {
 export const PATCH = async (request, { params }) => {
   await connectToDB();
   const { sessionId } = params;
-  const { studentId, staffId, status, behaviors, notes } = await request.json();
+  const updates = await request.json();
 
   try {
     const session = await Session.findById(sessionId);
-    session.student = studentId;
-    session.staff = staffId;
-    session.status = status;
-    session.behaviors = behaviors;
-    if (notes !== undefined) {  
-      session.notes = notes;
+    if (!session) {
+      return new Response("Session not found", { status: 404 });
     }
+
+    // Dynamically update fields based on the updates object
+    Object.keys(updates).forEach(key => {
+      session[key] = updates[key];
+    });
 
     await session.save();
     return new Response(JSON.stringify(session), { status: 200 });
   } catch (error) {
+    console.error("Error updating session:", error);
     return new Response("Failed to update session", { status: 500 });
   }
 };
@@ -63,3 +65,4 @@ export const DELETE = async (request, { params }) => {
         return new Response("Failed to delete session", { status: 500 });
     }
 }
+

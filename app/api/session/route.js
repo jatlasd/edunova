@@ -5,13 +5,14 @@ import Student from "@models/student";
 import Behavior from "@models/behavior";
 
 export const POST = async (request) => {
-    const { name, student, date, status, staff, behaviors } = await request.json();
+    const { name, student, createdDate, finishedDate, status, staff, behaviors } = await request.json();
     try {
         await connectToDB();
         const session = new Session({
             name,
             student,
-            date,
+            createdDate,
+            finishedDate,
             status,
             staff,
             behaviors,

@@ -12,7 +12,10 @@ const SessionSchema = new Schema({
         ref: 'Student',
         required: true
       },
-    date: {
+    createdDate: {
+        type: String
+    },
+    finishedDate: {
         type: String
     },
     status: {
@@ -33,7 +36,15 @@ const SessionSchema = new Schema({
             type: Number,
             default: 0
         },
-        timestamps: [String]
+        timestamps: [{
+            time: {
+                type: String
+            },
+            notes: {
+                type: String
+            }
+        }],
+
     }],
     notes: {
         type: String
