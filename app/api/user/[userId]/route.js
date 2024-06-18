@@ -50,5 +50,18 @@ export const PATCH = async (request, { params }) => {
   } catch (error) {
     return new Response("Failed to update user", { status: 500 });
   }
+}
 
+export const DELETE = async (request, {params}) => {
+  await connectToDB();
+
+  const { userId } = params;
+
+  try {
+    const user = await User.findById(userId);
+    await user.deleteOne()
+    return new Response("User deleted", { status: 200 });
+  } catch (error) {
+    return new Response("Failed to delete user", { status: 500 });
+  }
 }

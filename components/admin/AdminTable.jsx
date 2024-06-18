@@ -11,9 +11,8 @@ import {
 import { useRouter } from "next/navigation";
 
 import { useState, useEffect } from "react";
-import AddStaff from "./AddStaff";
 
-const AdminTable = () => {
+const AdminTable = ({ refreshTrigger }) => {
   const router = useRouter();
   const [users, setUsers] = useState([]);
 
@@ -21,17 +20,25 @@ const AdminTable = () => {
     fetch("/api/user")
       .then((res) => res.json())
       .then((data) => setUsers(data));
-  }, []);
+  }, [refreshTrigger]);
 
   return (
-    <div className="w-full p-10 rounded-md bg-primary-clear">
-      <Table className=''>
+    <div className="w-full rounded-md bg-primary-clear p-10">
+      <Table className="">
         <TableHeader>
           <TableRow isHeader={true} className="w-[100px]">
-            <TableHead className='text-xl font-semibold text-primary-tint'>Name</TableHead>
-            <TableHead className='text-xl font-semibold text-primary-tint'>Email</TableHead>
-            <TableHead className='text-xl font-semibold text-primary-tint'>Students</TableHead>
-            <TableHead className='text-xl font-semibold text-primary-tint'>Role</TableHead>
+            <TableHead className="text-xl font-semibold text-primary-tint">
+              Name
+            </TableHead>
+            <TableHead className="text-xl font-semibold text-primary-tint">
+              Email
+            </TableHead>
+            <TableHead className="text-xl font-semibold text-primary-tint">
+              Students
+            </TableHead>
+            <TableHead className="text-xl font-semibold text-primary-tint">
+              Role
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -46,7 +53,7 @@ const AdminTable = () => {
               </TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.students.length}</TableCell>
-              <TableCell className='capitalize'>{user.role}</TableCell>
+              <TableCell className="capitalize">{user.role}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -32,8 +32,6 @@ export const GlobalProvider = ({ children }) => {
     setUser(null);
     setIsLoggedIn(false);
     localStorage.removeItem("user");
-
-    // Add this fetch call to clear the cookie
     await fetch('/api/logout', { method: 'POST' });
   };
 

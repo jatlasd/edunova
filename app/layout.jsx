@@ -4,6 +4,7 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { GlobalProvider } from "@/lib/GlobalProvider";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "@components/ui/toaster";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ const RootLayout = ({ children }) => {
           <main className="h-full">
             <Navbar />
             {children}
+            <Toaster />
           </main>
         </GlobalProvider>
       </body>

@@ -38,7 +38,7 @@ const Navbar = () => {
                 const isActive = pathname === link.route;
                 return (
                   <Link
-                    key={link.name}
+                    key={link.route}
                     href={link.route}
                     className={cn("nav-link", {
                       "nav-link-active": isActive,
