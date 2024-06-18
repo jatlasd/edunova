@@ -78,7 +78,7 @@ main {
   }
 
   .input-class {
-    @apply text-16 placeholder:text-16 rounded-lg border border-gray-300 bg-white-1 text-gray-900;
+    @apply text-16 placeholder:text-16 rounded-lg focus:border-none bg-white-1 text-gray-900;
   }
 
   .form-label {

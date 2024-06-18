@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -70,20 +71,20 @@ const ActiveSessionContainer = ({ sessionId }) => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="bg-white-1">
           <DialogHeader>
-            <DialogTitle>Behavior: {selectedBehavior.behavior}</DialogTitle>
+            <DialogTitle className='text-primary-tint font-bold text-xl'>{selectedBehavior.behavior}</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-5 p-5">
-            <span>Notes</span>
-            <input type="text" className="input-class" onChange={(e) => {
+            <span className="text-primary-tint font-semibold text-lg">Notes</span>
+            <Input type="text" className="input-class" onChange={(e) => {
               const updatedBehavior = { ...selectedBehavior };
               updatedBehavior.timestamps[updatedBehavior.timestamps.length - 1].notes = e.target.value;
               setSelectedBehavior(updatedBehavior);
             }}/>
             <button
-              className="px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+              className="px-4 py-2 mt-4 font-bold text-white-1 bg-primary rounded hover:bg-primary-tint rounded-md"
               onClick={() => setIsOpen(false)}
             >
-              Close
+              Submit
             </button>
           </div>
         </DialogContent>
