@@ -32,7 +32,7 @@ const ActiveSessionContainer = ({ sessionId }) => {
     const response = await fetch(`/api/session/${sessionId}`);
     const data = await response.json();
     setSession(data.session);
-    setBehaviors(data.session.behaviors);
+    setBehaviors(data.behaviors);
   };
   useEffect(() => {
     fetchSession();
@@ -42,18 +42,13 @@ const ActiveSessionContainer = ({ sessionId }) => {
     behavior.count++;
     const now = new Date();
     const formattedTime = formatTime(now);
-    behavior.timestamps.push({ time: formattedTime, notes: "" }); // Add an empty notes field initially
+    behavior.timestamps.push({ time: formattedTime, notes: "" });
     setSelectedBehavior(behavior);
     setIsOpen(true);
   };
 
   const handleSubmit = async () => {
-    session.status = "finished";
-    session.finishedDate = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
+    session.status = "Pending";
     const response = await fetch(`/api/session/${sessionId}`, {
       method: "PATCH",
       headers: {
@@ -81,7 +76,7 @@ const ActiveSessionContainer = ({ sessionId }) => {
               setSelectedBehavior(updatedBehavior);
             }}/>
             <button
-              className="px-4 py-2 mt-4 font-bold text-white-1 bg-primary rounded hover:bg-primary-tint rounded-md"
+              className="px-4 py-2 mt-4 font-bold text-white-1 bg-primary hover:bg-primary-tint rounded-md"
               onClick={() => setIsOpen(false)}
             >
               Submit
@@ -95,7 +90,7 @@ const ActiveSessionContainer = ({ sessionId }) => {
             {session.name}
           </h1>
           <div className="flex gap-20">
-            {behaviors.map((behavior, index) => (
+            {session.behaviors.map((behavior, index) => (
               <button
                 key={index}
                 className="h-[200px] w-[250px] rounded-md bg-primary text-xl font-semibold text-white-1 shadow-md hover:bg-primary-tint"

@@ -6,6 +6,15 @@ import CreateSessionDialog from "@components/sessions/CreateSessionDialog";
 import { useGlobalContext } from "@lib/GlobalProvider";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const Sessions = () => {
   const router = useRouter();
@@ -61,45 +70,30 @@ const Sessions = () => {
                 Sessions for {selectedStudent.label}
               </h1>
               {sessions.length > 0 ? (
-                <div className="flex gap-5">
-                  {sessions.map((session) => (
-                    <div
-                      key={session._id}
-                      className="hover:bg-primary-clear-tint mt-5 flex h-[200px] w-[300px] cursor-pointer flex-col items-center justify-center gap-5 rounded-md bg-primary-clear shadow-sm"
-                      onClick={() => router.push(`/sessions/${session._id}`)}
-                    >
-                      <h1 className="text-2xl font-bold capitalize text-primary-tint">
-                        {session.name}
-                      </h1>
-                      <div className="flex gap-5">
-                        <h2 className="text-lg font-bold text-primary-tint">
-                          Status:&nbsp;
-                        </h2>
-                        <span className="text-lg font-semibold capitalize text-primary">
-                          {session.status}
-                        </span>
-                      </div>
-                      <div className="flex gap-5">
-                        <h2 className="text-lg font-bold text-primary-tint">
-                          Date Created:&nbsp;
-                        </h2>
-                        <span className="text-lg font-semibold text-primary">
-                          {session.createdDate}
-                        </span>
-                      </div>
-                      {session.status === "finished" && (
-                        <div className="flex gap-5">
-                          <h2 className="text-lg font-bold text-primary-tint">
-                            Date Finished:&nbsp;
-                          </h2>
-                          <span className="text-lg font-semibold text-primary">
-                            {session.finishedDate}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <Table className='mt-5'>
+                  <TableHeader>
+                    <TableRow isHeader={true}>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created Date</TableHead>
+                      <TableHead>Finished Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sessions.map((session) => (
+                      <TableRow
+                        key={session._id}
+                        onClick={() => router.push(`/sessions/${session._id}`)}
+                        className="cursor-pointer"
+                      >
+                        <TableCell>{session.name}</TableCell>
+                        <TableCell>{session.status}</TableCell>
+                        <TableCell>{session.createdDate}</TableCell>
+                        <TableCell>{session.finishedDate}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               ) : (
                 <div>
                   <h1>No Sessions Found</h1>

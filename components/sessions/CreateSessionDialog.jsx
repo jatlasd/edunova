@@ -60,7 +60,7 @@ const CreateSessionDialog = ({ studentId }) => {
         day: "2-digit",
       }),
       finishedDate: "",
-      status: "Pending",
+      status: "Initialized",
       staff: "",
       behaviors: [{ behavior: "", count: 0, timestamps: [{time: "", notes: ""}]}],
     },

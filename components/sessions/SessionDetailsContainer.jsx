@@ -8,114 +8,123 @@ const SessionDetailsContainer = ({ sessionId }) => {
   const router = useRouter();
   const { user } = useGlobalContext();
   const [session, setSession] = useState(null);
+  const [allTimestamps, setAllTimestamps] = useState([]);
   useEffect(() => {
     fetch(`/api/session/${sessionId}`)
       .then((res) => res.json())
-      .then((data) => setSession(data));
+      .then((data) => setSession(data.session));
   }, [sessionId]);
+
+  useEffect(() => {
+    if (session) {
+      const combinedTimestamps = [];
+      session.behaviors.forEach((behavior) => {
+        behavior.timestamps.forEach((timestamp) => {
+          combinedTimestamps.push({
+            behavior: behavior.behavior,
+            time: timestamp.time,
+            notes: timestamp.notes,
+          });
+        });
+      });
+
+      const timeToMinutes = (time) => {
+        const [timePart, period] = time.split(" ");
+        let [hours, minutes] = timePart.split(":").map(Number);
+        if (hours === 12) hours = 0;
+        if (period.toLowerCase() === "pm") hours += 12;
+        return hours * 60 + minutes;
+      };
+
+      combinedTimestamps.sort((a, b) => {
+        return timeToMinutes(a.time) - timeToMinutes(b.time);
+      });
+
+      setAllTimestamps(combinedTimestamps);
+    }
+  }, [session]);
 
   return (
     <div className="mt-10 flex w-full">
       {session && (
-        <div className="flex w-full flex-col">
+        <div className="flex w-full flex-col items-center">
           {/* Header */}
           <div className="flex flex-col items-center">
-            <span className="text-5xl font-bold capitalize text-primary-tint">
-              {session.session.name}
+            <span className="mb-5 text-5xl font-bold capitalize text-primary-tint">
+              {session.name}
             </span>
-            <span className="mt-10 text-3xl font-semibold text-primary">
-              Session Details
-            </span>
+            <div className="ml-10 flex items-center">
+              <span className="text-lg font-bold text-primary-tint">
+                Status:&nbsp;
+              </span>
+              <span className="ml-3 text-lg font-semibold text-primary">
+                {session.status}
+              </span>
+            </div>
+            <div className="ml-10 flex items-center">
+              <span className="text-lg font-bold text-primary-tint">
+                Created Date:&nbsp;
+              </span>
+              <span className="ml-3 text-lg font-semibold text-primary">
+                {session.createdDate}
+              </span>
+            </div>
+            {session.finishedDate && (
+              <div className="ml-10 flex items-center">
+                <span className="text-lg font-bold text-primary-tint">
+                  Finished Date:&nbsp;
+                </span>
+                <span className="ml-3 text-lg font-semibold text-primary">
+                  {session.finishedDate}
+                </span>
+              </div>
+            )}
+            {session.notes && (
+              <div className="ml-10 flex items-center">
+                <span className="text-lg font-bold text-primary-tint">
+                  Notes:&nbsp;
+                </span>
+                <span className="ml-3 text-lg font-semibold text-primary">
+                  {session.notes}
+                </span>
+              </div>
+            )}
+            <button onClick={() => console.log(allTimestamps)}>click</button>
           </div>
 
           {/* Session Details */}
-          <div className="mt-5 flex w-full justify-center">
-            <div className="flex w-1/3 flex-col rounded-md bg-primary-clear shadow-md">
-              <div className="flex items-center gap-3 p-5">
-                <span className="text-2xl font-semibold text-primary-tint">
-                  Student:&nbsp;
-                </span>
-                <span className="text-lg font-medium capitalize text-primary">
-                  {session.student.name}
-                </span>
-              </div>
 
-              <div className="flex items-center gap-3 p-5">
-                <span className="text-2xl font-semibold text-primary-tint">
-                  Date Created:&nbsp;
-                </span>
-                <span className="text-lg font-medium capitalize text-primary">
-                  {session.session.createdDate}
-                </span>
-              </div>
-
-              {(user && user.role === "admin") ||
-                (user.role === "super" && (
-                  <div className="flex items-center gap-3 p-5">
-                    <span className="text-2xl font-semibold text-primary-tint">
-                      Staff:&nbsp;
-                    </span>
-                    <span className="text-lg font-medium capitalize text-primary">
-                      {session.staff.name}
-                    </span>
-                  </div>
-                ))}
-
-              <div className="flex items-center gap-3 p-5">
-                <span className="text-2xl font-semibold text-primary-tint">
-                  Status:&nbsp;
-                </span>
-                <span className="text-lg font-medium capitalize text-primary">
-                  {session.session.status}
-                </span>
-              </div>
-
-              <div className="flex flex-col p-5">
-                <span className="text-2xl font-semibold text-primary-tint">
-                  Behaviors:&nbsp;
-                </span>
-                {session.session.behaviors.map((behavior, index) => (
-                  <div
-                    className="flex w-2/3 items-center justify-between gap-3 p-5"
-                    key={index}
-                  >
-                    <div>
-                      <span className="text-lg font-medium capitalize text-primary-tint">
-                        Behavior:&nbsp;
-                      </span>
-                      <span className="text-lg font-medium capitalize text-primary">
-                        {behavior.behavior}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-lg font-medium capitalize text-primary-tint">
-                        Count:&nbsp;
-                      </span>
-                      <span className="text-lg font-medium text-primary">
-                        {behavior.count}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {session.session.notes && (
-                <div className="flex flex-col p-5">
-                  <span className="text-2xl font-semibold text-primary-tint">
-                    Notes:&nbsp;
+          {/* {session.status === "Pending" && (
+            <div className="">
+              {session.behaviors.map((behavior, index) => (
+                <div className="flex flex-col" key={index}>
+                  <span className="text-lg font-bold capitalize text-primary-tint">
+                    {behavior.behavior}
                   </span>
-                  <span className="text-lg font-medium text-primary">
-                    {session.session.notes}
-                  </span>
+                  <div className="grid">
+                    <div>
+                      <span>Time</span>
+                      <span>Notes</span>
+                    </div>
+                    {behavior.timestamps.map((timestamp, index) => (
+                      <div className="flex gap-5" key={index}>
+                        <span className="text-lg font-semibold text-primary">
+                          {timestamp.time}
+                        </span>
+                        <span>{timestamp.notes}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-          </div>
+          )} */}
 
           {/* Buttons */}
+
           <div className="mt-8 flex flex-col items-center gap-8">
             <div className="flex items-center gap-10">
-              {session.session.status === "Pending" && (
+              {session.status === "Initialized" && (
                 <button
                   className="rounded-md bg-primary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-primary-tint"
                   onClick={() => router.push(`/sessions/${sessionId}/active`)}

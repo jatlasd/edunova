@@ -13,6 +13,7 @@ export const GET = async (request, { params }) => {
       return new Response("Session not found", { status: 404 });
     }
     const populatedSession = await session.populate(["student", "staff"]);
+    // return new Response(JSON.stringify(session), { status: 200 })
     return new Response(
       JSON.stringify({
         session: session,
