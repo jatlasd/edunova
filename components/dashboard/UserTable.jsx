@@ -34,8 +34,8 @@ const UserTable = () => {
 
   return (
     <Table>
-      <TableHeader>
-        <TableRow className='w-[100px]'>
+      <TableHeader >
+        <TableRow className='w-[100px]' isHeader={true}>
           <TableHead className='font-semibold text-primary-tint text-lg'>Name</TableHead>
           <TableHead className='font-semibold text-primary-tint text-lg'>Grade</TableHead>
           <TableHead className='font-semibold text-primary-tint text-lg'>Age</TableHead>
