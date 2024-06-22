@@ -58,12 +58,18 @@ export const DELETE = async (request, { params }) => {
     try {
         const session = await Session.findById(sessionId);
         if (!session) {
-        return new Response("Session not found", { status: 404 });
+            return new Response("Session not found", { status: 404 });
         }
+
+        // Find the student associated with the session and remove the sessionId from their sessions array
+        if (session.student) {
+            await Student.findByIdAndUpdate(session.student, { $pull: { sessions: sessionId } });
+        }
+
         await session.deleteOne();
         return new Response(JSON.stringify(session), { status: 200 });
     } catch (error) {
+        console.error("Error deleting session:", error);
         return new Response("Failed to delete session", { status: 500 });
     }
 }
-

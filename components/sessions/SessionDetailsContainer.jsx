@@ -19,6 +19,15 @@ const SessionDetailsContainer = ({ sessionId }) => {
   const [session, setSession] = useState(null);
   const [allTimestamps, setAllTimestamps] = useState([]);
   const [dataFilter, setDataFilter] = useState("default");
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
+  const [finalNotes, setFinalNotes] = useState("");
+
+  useEffect(() => {
+    if (finalNotes.trim() === "") {
+      setIsReadyToSubmit(false);
+    }
+  }, [finalNotes]);
+
   useEffect(() => {
     fetch(`/api/session/${sessionId}`)
       .then((res) => res.json())
@@ -53,6 +62,35 @@ const SessionDetailsContainer = ({ sessionId }) => {
       setAllTimestamps(combinedTimestamps);
     }
   }, [session]);
+
+  const handleSubmit = async () => {
+    session.status = "Finalized";
+    session.notes = finalNotes;
+    session.finishedDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const response = await fetch(`/api/session/${sessionId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(session),
+    });
+    if (response.ok) {
+      router.push(`/sessions/${sessionId}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    const response = await fetch(`/api/session/${sessionId}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      router.push("/sessions");
+    }
+  }
 
   return (
     <div className="mt-10 flex w-full">
@@ -89,95 +127,94 @@ const SessionDetailsContainer = ({ sessionId }) => {
                 </span>
               </div>
             )}
-            {session.notes && (
-              <div className="ml-10 flex items-center">
-                <span className="text-lg font-bold text-primary-tint">
-                  Notes:&nbsp;
-                </span>
-                <span className="ml-3 text-lg font-semibold text-primary">
-                  {session.notes}
-                </span>
-              </div>
-            )}
-            {/* <button onClick={() => console.log(allTimestamps)}>click</button> */}
           </div>
 
           {/* Session Details */}
 
-          {session.status === "Pending" && (
-            <div className="mt-10 flex w-1/2 flex-col items-center">
-              {/* <div className="flex w-1/3 flex-col items-center rounded-md bg-primary-clear shadow-md mb-10"> */}
-              <Select onValueChange={(value) => setDataFilter(value)}>
-                <SelectTrigger className="w-1/2 bg-primary-clear">
-                  <SelectValue
-                    placeholder="Select Filter"
-                    className="placeholder:font-semibold placeholder:text-primary-tint"
-                  />
-                </SelectTrigger>
-                <SelectContent className="bg-white-1">
-                  <SelectGroup>
-                    <SelectItem
-                      value="default"
-                      className="cursor-pointer text-base text-primary focus:bg-primary-clear focus:text-primary-tint"
-                    >
-                      All
-                    </SelectItem>
-                    {session.behaviors.map((behavior, index) => (
+          {session.status === "Pending" ||
+            (session.status === "Finalized" && (
+              <div className="mt-10 flex w-1/2 flex-col items-center">
+                <Select onValueChange={(value) => setDataFilter(value)}>
+                  <SelectTrigger className="w-1/2 bg-primary-clear">
+                    <SelectValue
+                      placeholder="Select Filter"
+                      className="placeholder:font-semibold placeholder:text-primary-tint"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white-1">
+                    <SelectGroup>
                       <SelectItem
-                        key={index}
-                        value={behavior.behavior}
+                        value="default"
                         className="cursor-pointer text-base text-primary focus:bg-primary-clear focus:text-primary-tint"
                       >
-                        {behavior.behavior}
+                        All
                       </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {dataFilter === "default" ? (
-                <div className="mt-5 grid w-full grid-cols-4 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
-                  <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
-                    Time
-                  </span>
-                  <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
-                    Behavior
-                  </span>
-                  <span className="col-span-2 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
-                    Notes
-                  </span>
-                  {allTimestamps.map((timestamp, index) => (
-                    <React.Fragment key={index}>
-                      <span className="col-span-1">{timestamp.time}</span>
-                      <span className="col-span-1">{timestamp.behavior}</span>
-                      <span className="col-span-2">{timestamp.notes}</span>
-                    </React.Fragment>
-                  ))}
-                </div>
-              ) : (
-                <div className="ml-16 mt-5 grid w-full grid-cols-3 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
-                  <span className="col-span-1 text-lg font-bold text-primary-tint">
-                    Time
-                  </span>
-                  <span className="col-span-2 text-lg font-bold text-primary-tint">
-                    Notes
-                  </span>
-                  {allTimestamps
-                    .filter((timestamp) => timestamp.behavior === dataFilter)
-                    .map((timestamp, index) => (
+                      {session.behaviors.map((behavior, index) => (
+                        <SelectItem
+                          key={index}
+                          value={behavior.behavior}
+                          className="cursor-pointer text-base text-primary focus:bg-primary-clear focus:text-primary-tint"
+                        >
+                          {behavior.behavior}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {dataFilter === "default" ? (
+                  <div className="mt-5 grid w-full grid-cols-4 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
+                    <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
+                      Time
+                    </span>
+                    <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
+                      Behavior
+                    </span>
+                    <span className="col-span-2 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
+                      Notes
+                    </span>
+                    {allTimestamps.map((timestamp, index) => (
                       <React.Fragment key={index}>
                         <span className="col-span-1">{timestamp.time}</span>
+                        <span className="col-span-1">{timestamp.behavior}</span>
                         <span className="col-span-2">{timestamp.notes}</span>
                       </React.Fragment>
                     ))}
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <div className="ml-16 mt-5 grid w-full grid-cols-3 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
+                    <span className="col-span-1 text-lg font-bold text-primary-tint">
+                      Time
+                    </span>
+                    <span className="col-span-2 text-lg font-bold text-primary-tint">
+                      Notes
+                    </span>
+                    {allTimestamps
+                      .filter((timestamp) => timestamp.behavior === dataFilter)
+                      .map((timestamp, index) => (
+                        <React.Fragment key={index}>
+                          <span className="col-span-1">{timestamp.time}</span>
+                          <span className="col-span-2">{timestamp.notes}</span>
+                        </React.Fragment>
+                      ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          {session.notes && (
+            <div className="ml-10 mt-10 flex w-1/2 flex-col rounded-md bg-white-1 p-5 shadow-md">
+              <span className="w-1/2 border-b-2 border-b-primary/20 pl-2 text-lg font-bold text-primary-tint">
+                Notes
+              </span>
+              <span className="ml-3 mt-3 text-lg font-semibold text-primary">
+                {session.notes}
+              </span>
             </div>
           )}
 
           {/* Buttons */}
 
-          <div className="mt-8 flex flex-col items-center gap-8">
-            <div className="flex items-center gap-10">
+          <div className="mt-8 flex w-full flex-col items-center gap-2">
+            <div className="flex w-1/2 items-center">
               {session.status === "Initialized" && (
                 <button
                   className="rounded-md bg-primary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-primary-tint"
@@ -186,18 +223,28 @@ const SessionDetailsContainer = ({ sessionId }) => {
                   Start Session
                 </button>
               )}
-              <button
-                className="rounded-md bg-primary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-primary-tint"
-                onClick={() => router.push(`/sessions/${sessionId}/edit`)}
-              >
-                Edit Session
-              </button>
+              {session.status === "Pending" && (
+                <div className="flex w-full flex-col items-center gap-5">
+                  <textarea
+                    className="h-20 w-full rounded-md border-2 border-primary-clear bg-white-1 p-2 shadow-md -outline-offset-2 focus:outline-primary-clear focus:ring-0"
+                    onChange={(e) => {
+                      setFinalNotes(e.target.value);
+                      setIsReadyToSubmit(true);
+                    }}
+                    placeholder="Enter Notes..."
+                  />
+                  <button
+                    className={`rounded-md border-2 px-5 py-3 text-lg font-bold ${!isReadyToSubmit ? "cursor-not-allowed border-primary-tint/50 bg-white-3 text-primary/30" : "border-none bg-primary text-white-1 shadow-md hover:bg-primary-tint"}`}
+                    onClick={handleSubmit}
+                  >
+                    Save and Submit
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="flex justify-center gap-20">
-              <button className="rounded-md bg-secondary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-secondary-tint">
-                Delete Session
-              </button>
-            </div>
+            <button className="rounded-md bg-secondary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-secondary-tint" onClick={handleDelete}>
+              Delete Session
+            </button>
           </div>
         </div>
       )}
