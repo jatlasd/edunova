@@ -23,6 +23,7 @@ import { useGlobalContext } from "@lib/GlobalProvider";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useStudentContext } from "@lib/StudentProvider";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -46,9 +47,10 @@ const formSchema = z.object({
   ),
 });
 
-const CreateSessionDialog = ({ studentId }) => {
+const CreateSessionDialog = () => {
     const router = useRouter()
   const { user } = useGlobalContext();
+  const { student, studentId } = useStudentContext();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,13 +78,13 @@ const CreateSessionDialog = ({ studentId }) => {
   const [selectedBehaviors, setSelectedBehaviors] = useState([]);
 
   const fetchBehaviors = async () => {
-    const response = await fetch(`/api/student/${studentId}`);
-    const data = await response.json();
-    const initialBehaviors = data.behaviors.map((behavior) => ({
+    // const response = await fetch(`/api/student/${studentId}`);
+    // const data = await response.json();
+    const initialBehaviors = student.behaviors.map((behavior) => ({
       ...behavior,
       isSelected: false,
     }));
-    setBehaviors(data.behaviors);
+    setBehaviors(student.behaviors);
     setSelectedBehaviors(initialBehaviors);
   };
 
@@ -146,6 +148,7 @@ const CreateSessionDialog = ({ studentId }) => {
           </DialogTitle>
         </DialogHeader>
         <div>
+          <button onClick={() => console.log(studentId)}>click</button>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}

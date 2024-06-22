@@ -35,12 +35,6 @@ const Sessions = () => {
     setStudents(formattedStudents);
   };
 
-  // const getSessionDetails = async () => {
-  //   const response = await fetch(`/api/student/${selectedStudent.id}`);
-  //   const data = await response.json();
-  //   setSessions(data.sessions);
-  // };
-
   useEffect(() => {
     if (user) {
       getUserDetails();

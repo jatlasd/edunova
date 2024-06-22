@@ -1,7 +1,5 @@
 "use client";
 
-import ComboBox from "@components/ComboBox";
-import Header from "@components/Header";
 import CreateSessionDialog from "@components/sessions/CreateSessionDialog";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -14,9 +12,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGlobalContext } from "@lib/GlobalProvider";
-const SessionListTable = ({ studentId}) => {
+import { useStudentContext } from "@lib/StudentProvider";
+const SessionListTable = () => {
     const { user } = useGlobalContext();
+    const { student, studentId } = useStudentContext();
   const pathname = usePathname();
+  const router = useRouter()
   const [sessions, setSessions] = useState([]);
 
   const getSessionDetails = async () => {
@@ -36,6 +37,7 @@ const SessionListTable = ({ studentId}) => {
       <div className="flex h-fit w-4/5 flex-col items-center justify-center rounded-md bg-primary-clear py-3 shadow-sm">
         {studentId !== "" && (
           <div className="flex w-4/5 flex-col items-center rounded-md">
+            <button onClick={() => console.log(student)}>click</button>
             {pathname !== "/sessions" && (
               <h1 className="mt-2 text-3xl font-bold text-primary-tint">
                 Sessions

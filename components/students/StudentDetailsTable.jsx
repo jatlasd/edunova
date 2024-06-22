@@ -1,19 +1,22 @@
 "use client";
 
+import { useStudentContext } from "@lib/StudentProvider";
 import { useState, useEffect } from "react";
 
-const StudentDetailsTable = ({ studentId }) => {
-  const [student, setStudent] = useState(null);
+const StudentDetailsTable = ({ }) => {
 
-  useEffect(() => {
-    const fetchStudent = async () => {
-      const response = await fetch(`/api/student/${studentId}`);
-      const data = await response.json();
-      console.log(data);
-      setStudent(data);
-    };
-    fetchStudent();
-  }, [studentId]);
+  const { student } = useStudentContext();
+  // const [student, setStudent] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchStudent = async () => {
+  //     const response = await fetch(`/api/student/${studentId}`);
+  //     const data = await response.json();
+  //     console.log(data);
+  //     setStudent(data);
+  //   };
+  //   fetchStudent();
+  // }, [studentId]);
 
   return (
     <div className="mr-40 flex flex-1 flex-col rounded-md bg-primary-clear p-3">

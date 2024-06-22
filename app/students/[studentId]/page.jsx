@@ -1,7 +1,6 @@
 import SessionListTable from "@components/sessions/SessionListTable";
 import StudentBehaviorTable from "@components/students/StudentBehaviorTable";
 import StudentDetailsTable from "@components/students/StudentDetailsTable";
-import StudentSessionTable from "@components/students/StudentSessionTable";
 import React from "react";
 
 const StudentPage = ({params}) => {
@@ -14,7 +13,7 @@ const StudentPage = ({params}) => {
       </div>
       <div className=" w-4/5 mt-5 flex justify-center items-center">
         {/* <StudentSessionTable studentId={studentId}/> */}
-        <SessionListTable studentId={studentId}/>
+        <SessionListTable />
       </div>
     </div>
   );
