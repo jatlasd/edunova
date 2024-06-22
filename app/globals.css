@@ -79,16 +79,6 @@ main {
 
   .input-class {
     @apply text-16 placeholder:text-16 rounded-lg focus:border-none bg-white-1 text-gray-900;
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
-    -webkit-text-fill-color: #333 !important;
-  }
-  
-  input.input-class:-webkit-autofill,
-  input.input-class:-webkit-autofill:hover,
-  input.input-class:-webkit-autofill:focus,
-  input.input-class:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
-    -webkit-text-fill-color: #333 !important;
   }
 
   .form-label {

@@ -18,7 +18,7 @@ const StudentDetailsTable = ({ studentId }) => {
   return (
     <div className="mr-40 flex flex-1 flex-col rounded-md bg-primary-clear p-3">
       {student && (
-        <>
+        <div className="w-1/2 ml-5">
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold text-primary-tint">
               Name:&nbsp;
@@ -43,7 +43,7 @@ const StudentDetailsTable = ({ studentId }) => {
               {student.student.grade}
             </span>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

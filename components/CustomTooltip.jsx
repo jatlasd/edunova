@@ -5,13 +5,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const CustomTooltip = ({ children, text }) => {
+const CustomTooltip = ({ children, text, textStyles }) => {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent>
-          <p>{text}</p>
+          <p className={textStyles}>{text}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
