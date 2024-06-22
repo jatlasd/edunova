@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import SessionListTable from "@components/sessions/SessionListTable";
 
 const Sessions = () => {
   const router = useRouter();
@@ -34,19 +35,17 @@ const Sessions = () => {
     setStudents(formattedStudents);
   };
 
-  const getSessionDetails = async () => {
-    const response = await fetch(`/api/student/${selectedStudent.id}`);
-    const data = await response.json();
-    setSessions(data.sessions);
-  };
+  // const getSessionDetails = async () => {
+  //   const response = await fetch(`/api/student/${selectedStudent.id}`);
+  //   const data = await response.json();
+  //   setSessions(data.sessions);
+  // };
 
   useEffect(() => {
     if (user) {
       getUserDetails();
     }
-    if (user && selectedStudent.id !== "") {
-      getSessionDetails();
-    }
+
   }, [user, selectedStudent]);
 
   return (
@@ -64,7 +63,8 @@ const Sessions = () => {
               setValue={setSelectedStudent}
             />
           )}
-          {selectedStudent.id !== "" && (
+          <SessionListTable studentId={selectedStudent.id} />
+          {/* {selectedStudent.id !== "" && (
             <div className="mt-10 flex w-4/5 flex-col items-center rounded-md">
               <h1 className="mt-2 text-3xl font-bold text-primary-tint">
                 Sessions for {selectedStudent.label}
@@ -105,7 +105,7 @@ const Sessions = () => {
                 )}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>
