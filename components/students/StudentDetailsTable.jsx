@@ -20,6 +20,7 @@ const StudentDetailsTable = ({ }) => {
 
   return (
     <div className="mr-40 flex flex-1 flex-col rounded-md bg-primary-clear p-3">
+      <button onClick={() => console.log(student)}>click</button>
       {student && (
         <div className="w-1/2 ml-5">
           <div className="flex items-center justify-between">
@@ -27,7 +28,7 @@ const StudentDetailsTable = ({ }) => {
               Name:&nbsp;
             </span>
             <span className="text-base capitalize text-primary-tint">
-              {student.student.name}
+              {student.name}
             </span>
           </div>
           <div className="flex items-center justify-between">
@@ -35,7 +36,7 @@ const StudentDetailsTable = ({ }) => {
               Age:&nbsp;
             </span>
             <span className="text-base capitalize text-primary-tint">
-              {student.student.age}
+              {student.age}
             </span>
           </div>
           <div className="flex items-center justify-between">
@@ -43,7 +44,7 @@ const StudentDetailsTable = ({ }) => {
               Grade:&nbsp;
             </span>
             <span className="text-base capitalize text-primary-tint">
-              {student.student.grade}
+              {student.grade}
             </span>
           </div>
         </div>

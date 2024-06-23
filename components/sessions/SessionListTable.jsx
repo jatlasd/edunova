@@ -20,24 +20,28 @@ const SessionListTable = () => {
   const router = useRouter()
   const [sessions, setSessions] = useState([]);
 
-  const getSessionDetails = async () => {
-    const response = await fetch(`/api/student/${studentId}`);
-    const data = await response.json();
-    setSessions(data.sessions);
-  };
+  // const getSessionDetails = async () => {
+  //   const response = await fetch(`/api/student/${studentId}`);
+  //   const data = await response.json();
+  //   setSessions(data.sessions);
+  // };
+
+  // useEffect(() => {
+  //   if (user && studentId !== "") {
+  //     getSessionDetails();
+  //   }
+  // }, [user, studentId]);
 
   useEffect(() => {
-    if (user && studentId !== "") {
-      getSessionDetails();
-    }
-  }, [user, studentId]);
+    setSessions(student?.sessions || []);
+  }, [user, student])
 
   return (
     <>
       <div className="flex h-fit w-4/5 flex-col items-center justify-center rounded-md bg-primary-clear py-3 shadow-sm">
         {studentId !== "" && (
           <div className="flex w-4/5 flex-col items-center rounded-md">
-            <button onClick={() => console.log(student)}>click</button>
+            <button onClick={() => console.log(student.behaviors)}>click</button>
             {pathname !== "/sessions" && (
               <h1 className="mt-2 text-3xl font-bold text-primary-tint">
                 Sessions

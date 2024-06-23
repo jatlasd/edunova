@@ -2,27 +2,16 @@
 
 import ComboBox from "@components/ComboBox";
 import Header from "@components/Header";
-import CreateSessionDialog from "@components/sessions/CreateSessionDialog";
 import { useGlobalContext } from "@lib/GlobalProvider";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import SessionListTable from "@components/sessions/SessionListTable";
+import { useStudentContext } from "@lib/StudentProvider";
 
 const Sessions = () => {
-  const router = useRouter();
   const { user } = useGlobalContext();
   const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState({ id: "", label: "" });
-  const [sessions, setSessions] = useState([]);
+  const { studentId, setStudentId } = useStudentContext();
 
   const getUserDetails = async () => {
     const response = await fetch(`/api/user/${user.id}?includeStudents=true`);
@@ -40,7 +29,7 @@ const Sessions = () => {
       getUserDetails();
     }
 
-  }, [user, selectedStudent]);
+  }, [user, studentId]);
 
   return (
     <>
@@ -53,11 +42,11 @@ const Sessions = () => {
           {user && (
             <ComboBox
               options={students}
-              value={selectedStudent}
-              setValue={setSelectedStudent}
+              value={studentId}
+              setValue={setStudentId}
             />
           )}
-          <SessionListTable studentId={selectedStudent.id} />
+          <SessionListTable />
           {/* {selectedStudent.id !== "" && (
             <div className="mt-10 flex w-4/5 flex-col items-center rounded-md">
               <h1 className="mt-2 text-3xl font-bold text-primary-tint">

@@ -40,15 +40,15 @@ const formSchema = z.object({
       timestamps: z.array(
         z.object({
           time: z.string(),
-          notes: z.string()
-        })
+          notes: z.string(),
+        }),
       ),
     }),
   ),
 });
 
 const CreateSessionDialog = () => {
-    const router = useRouter()
+  const router = useRouter();
   const { user } = useGlobalContext();
   const { student, studentId } = useStudentContext();
   const form = useForm({
@@ -64,7 +64,9 @@ const CreateSessionDialog = () => {
       finishedDate: "",
       status: "Initialized",
       staff: "",
-      behaviors: [{ behavior: "", count: 0, timestamps: [{time: "", notes: ""}]}],
+      behaviors: [
+        { behavior: "", count: 0, timestamps: [{ time: "", notes: "" }] },
+      ],
     },
   });
 
@@ -77,20 +79,16 @@ const CreateSessionDialog = () => {
   const [behaviors, setBehaviors] = useState([]);
   const [selectedBehaviors, setSelectedBehaviors] = useState([]);
 
-  const fetchBehaviors = async () => {
-    // const response = await fetch(`/api/student/${studentId}`);
-    // const data = await response.json();
-    const initialBehaviors = student.behaviors.map((behavior) => ({
-      ...behavior,
-      isSelected: false,
-    }));
-    setBehaviors(student.behaviors);
-    setSelectedBehaviors(initialBehaviors);
-  };
-
   useEffect(() => {
-    fetchBehaviors();
-  }, []);
+    if(student) {
+      const initialBehaviors = student.behaviors.map((behavior) => ({
+        ...behavior,
+        isSelected: false,
+      }));
+      setBehaviors(student.behaviors);
+      setSelectedBehaviors(initialBehaviors);
+    }
+  }, [student]);
 
   const handleCheckboxChange = (behaviorName) => {
     setSelectedBehaviors((prevBehaviors) => {
@@ -112,7 +110,10 @@ const CreateSessionDialog = () => {
       behaviors: selectedData.map((behavior) => ({
         behavior: behavior.behavior,
         count: 0,
-        timestamps: behavior.timestamps && behavior.timestamps.length > 0 ? behavior.timestamps : [],
+        timestamps:
+          behavior.timestamps && behavior.timestamps.length > 0
+            ? behavior.timestamps
+            : [],
       })),
     };
 
@@ -127,7 +128,7 @@ const CreateSessionDialog = () => {
       if (!response.ok) {
         throw new Error("Failed to create session");
       }
-      const session = await response.json(); 
+      const session = await response.json();
       router.push(`/sessions/${session._id}`);
     } catch (error) {
       console.error(error);
@@ -137,18 +138,21 @@ const CreateSessionDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="px-4 py-2 text-lg font-semibold rounded-md bg-primary text-white-1 hover:bg-primary-tint">
+        <button className="rounded-md bg-primary px-4 py-2 text-lg font-semibold text-white-1 hover:bg-primary-tint">
           Create New Session
         </button>
       </DialogTrigger>
-      <DialogContent className='bg-white-1' onOpenAutoFocus={(e) => e.preventDefault()}>
+      <DialogContent
+        className="bg-white-1"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl text-primary-tint">
             Create New Session
           </DialogTitle>
         </DialogHeader>
         <div>
-          <button onClick={() => console.log(studentId)}>click</button>
+          <button onClick={() => console.log(student.behaviors)}>click</button>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -160,7 +164,7 @@ const CreateSessionDialog = () => {
                 render={({ field }) => (
                   <div className="flex flex-col gap-1.5">
                     <FormLabel className="form-label">Session Name</FormLabel>
-                    <div className="flex flex-col w-full">
+                    <div className="flex w-full flex-col">
                       <FormControl>
                         <Input
                           placeholder="Session Name"
@@ -175,7 +179,7 @@ const CreateSessionDialog = () => {
               ></FormField>
               {/* Behavior checkboxes */}
               {selectedBehaviors.map((behavior, index) => (
-                <div key={index} className="flex justify-between w-1/4">
+                <div key={index} className="flex w-1/4 justify-between">
                   <FormLabel className="form-label">
                     {behavior.behavior}
                   </FormLabel>

@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -21,7 +20,7 @@ const ComboBox = ({ options, value, setValue }) => {
 
   const handleSelect = (option) => {
     const newValue = option.id === value.id ? { id: "", label: "" } : option;
-    setValue(newValue);
+    setValue(newValue.id);
     setOpen(false);
   };
 
