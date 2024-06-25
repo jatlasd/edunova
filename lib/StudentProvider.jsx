@@ -17,7 +17,7 @@ export const StudentProvider = ({ children }) => {
       try {
         const response = await fetch(`/api/student/${studentId}`);
         const data = await response.json();
-        setStudent(data);
+        setStudent(data.student);
         localStorage.setItem("student", JSON.stringify(data.student));
         setIsLoading(false);
       } catch (error) {

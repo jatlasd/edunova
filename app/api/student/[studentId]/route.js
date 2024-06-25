@@ -31,3 +31,22 @@ return new Response(JSON.stringify({
     return new Response("Failed to fetch student", { status: 500 });
   }
 };
+
+export const PATCH = async (request, { params }) => {
+  await connectToDB();
+
+  const { studentId } = params;
+  const { name, age, grade, user } = await request.json();
+
+  try {
+    const student = await Student.findById(studentId);
+    student.name = name;
+    student.age = age;
+    student.grade = grade;
+    student.users = user;
+    await student.save()
+    return new Response(JSON.stringify(student), { status: 200 });
+  } catch (error) {
+    return new Response("Failed to update student", { status: 500 });
+  }
+}
