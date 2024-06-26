@@ -10,9 +10,11 @@ export const StudentProvider = ({ children }) => {
   const [studentId, setStudentId] = useState(null);
   const [student, setStudent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   useEffect(() => {
     const fetchStudent = async () => {
+      if (!studentId) return;
       setIsLoading(true);
       try {
         const response = await fetch(`/api/student/${studentId}`);
@@ -26,19 +28,10 @@ export const StudentProvider = ({ children }) => {
       }
     };
 
-    const storedStudent = localStorage.getItem("student");
-    if (storedStudent) {
-      const parsedStudent = JSON.parse(storedStudent);
-      if (!studentId || (parsedStudent && parsedStudent._id === studentId)) {
-        setStudent(parsedStudent);
-        return;
-      }
-    }
-
-    if (studentId) {
-      fetchStudent();
-    }
-  }, [studentId]);
+    
+      fetchStudent()
+    
+  }, [studentId, refetchTrigger]);
 
   useEffect(() => {
     const storedStudent = localStorage.getItem("student");
@@ -49,7 +42,15 @@ export const StudentProvider = ({ children }) => {
 
   return (
     <StudentContext.Provider
-      value={{ studentId, setStudentId, student, isLoading, setIsLoading }}
+      value={{ 
+        studentId, 
+        setStudentId, 
+        student, 
+        isLoading, 
+        setIsLoading,
+        refetchTrigger,
+        setRefetchTrigger,
+      }}
     >
       {children}
     </StudentContext.Provider>

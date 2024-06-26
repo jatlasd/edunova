@@ -20,7 +20,7 @@ const TableRow = ({ detail, studentDetail }) => {
 };
 
 const StudentDetailsTable = ({}) => {
-  const { student } = useStudentContext();
+  const { student, setRefetchTrigger, setStudentId } = useStudentContext();
   const { user } = useGlobalContext();
   const [isEditing, setIsEditing] = useState(false);
   const [updatedStudent, setUpdatedStudent] = useState({
@@ -53,7 +53,7 @@ const StudentDetailsTable = ({}) => {
         name: student.name,
         age: student.age,
         grade: student.grade,
-        users: student.users.map(user => user._id),
+        users: student.users.map((user) => user._id),
       });
     }
   }, [student]);
@@ -72,14 +72,14 @@ const StudentDetailsTable = ({}) => {
   }, []);
 
   const handleStaffSelect = (staffId) => {
-    setUpdatedStudent(prev => {
+    setUpdatedStudent((prev) => {
       const newUsers = prev.users.includes(staffId)
-        ? prev.users.filter(id => id !== staffId)
+        ? prev.users.filter((id) => id !== staffId)
         : [...prev.users, staffId];
-      
+
       return {
         ...prev,
-        users: newUsers
+        users: newUsers,
       };
     });
   };
@@ -87,30 +87,32 @@ const StudentDetailsTable = ({}) => {
   const getDropdownDisplayText = () => {
     if (updatedStudent.users.length === 0) return "Select Staff";
     if (updatedStudent.users.length === 1) {
-      const selectedStaffMember = allStaff.find(staff => staff._id === updatedStudent.users[0]);
+      const selectedStaffMember = allStaff.find(
+        (staff) => staff._id === updatedStudent.users[0],
+      );
       return selectedStaffMember ? selectedStaffMember.name : "Select Staff";
     }
     return `${updatedStudent.users.length} Selected`;
   };
 
-  const handleSubmit = () => {
-    console.log(updatedStudent);
-    // e.preventDefault();
-    // try {
-    //   const response = await fetch(`/api/student/${student._id}`, {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(updatedStudent),
-    //   });
-    //   if (response.ok) {
-    //     setIsEditing(false);
-    //     // Optionally, update the student context or refetch the student data
-    //   }
-    // } catch (error) {
-    //   console.error("Failed to update student:", error);
-    // }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`/api/student/${student._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedStudent),
+      });
+      if (response.ok) {
+        setStudentId(student._id);
+        setRefetchTrigger((prev) => prev + 1);
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error("Failed to update student:", error);
+    }
   };
 
   return (
@@ -119,15 +121,14 @@ const StudentDetailsTable = ({}) => {
         <h1 className="ml-2 w-1/2 border-b border-b-primary/30 pl-3 text-3xl font-bold text-primary-tint">
           Details
         </h1>
-        {user &&
-          (user.role === "admin" || user.role === "super") && (
-            <button
-              className="mr-5 cursor-pointer text-primary transition-all duration-75 hover:text-primary-tint hover:underline"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit
-            </button>
-          )}
+        {user && (user.role === "admin" || user.role === "super") && (
+          <button
+            className="mr-5 cursor-pointer text-primary transition-all duration-75 hover:text-primary-tint hover:underline"
+            onClick={() => setIsEditing(true)}
+          >
+            Edit
+          </button>
+        )}
       </div>
       {student && user && (
         <div className="ml-5 mt-7 flex w-full flex-col gap-y-5 px-10">
@@ -179,26 +180,30 @@ const StudentDetailsTable = ({}) => {
                 />
               </div>
 
-              <div className="flex relative" ref={dropdownRef}>
+              <div className="relative flex" ref={dropdownRef}>
                 <span className="text-lg font-semibold capitalize text-primary-tint">
                   Staff:&nbsp;
                 </span>
                 <div className="ml-auto w-[200px]">
                   <button
                     type="button"
-                    className="flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-left bg-white-1 border border-primary/30 rounded-md shadow-sm "
+                    className="flex w-full items-center justify-between rounded-md border border-primary/30 bg-white-1 px-4 py-2 text-left text-sm font-medium shadow-sm"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
                     {getDropdownDisplayText()}
-                    {isDropdownOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    {isDropdownOpen ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
                   </button>
                   {isDropdownOpen && (
-                    <div className="absolute right-0 w-[200px] mt-2 origin-top-right bg-white rounded-md shadow-lg  focus:outline-none">
+                    <div className="bg-white absolute right-0 mt-2 w-[200px] origin-top-right rounded-md shadow-lg focus:outline-none">
                       <div className="py-1">
                         {allStaff.map((staff) => (
-                          <div 
-                            key={staff._id} 
-                            className="flex items-center px-4 py-2 text-sm cursor-pointer bg-white-1 "
+                          <div
+                            key={staff._id}
+                            className="flex cursor-pointer items-center bg-white-1 px-4 py-2 text-sm"
                             onClick={() => handleStaffSelect(staff._id)}
                           >
                             <Checkbox
@@ -214,15 +219,17 @@ const StudentDetailsTable = ({}) => {
                 </div>
               </div>
               <div className="flex w-full justify-evenly">
-                <button 
+                <button
                   className="cursor-pointer rounded-md bg-primary px-2 py-1 font-semibold text-white-1 shadow-md transition-colors duration-75 hover:bg-primary-tint"
                   onClick={handleSubmit}
                 >
                   Submit
                 </button>
-                <button 
+                <button
                   className="cursor-pointer rounded-md bg-secondary px-2 py-1 font-semibold text-white-1 shadow-md transition-colors duration-75 hover:bg-secondary-tint"
-                  onClick={() => {setIsEditing(false)}}
+                  onClick={() => {
+                    setIsEditing(false);
+                  }}
                 >
                   Cancel
                 </button>
@@ -236,7 +243,7 @@ const StudentDetailsTable = ({}) => {
               {user.role !== "user" && (
                 <TableRow
                   detail="staff"
-                  studentDetail={student.users.map(u => u.name).join(", ")}
+                  studentDetail={student.users.map((u) => u.name).join(", ")}
                 />
               )}
             </>

@@ -32,18 +32,20 @@ return new Response(JSON.stringify({
   }
 };
 
-export const PATCH = async (request, { params }) => {
+export const PUT = async (request, { params }) => {
   await connectToDB();
 
   const { studentId } = params;
-  const { name, age, grade, user } = await request.json();
+  const updates = await request.json();
 
   try {
     const student = await Student.findById(studentId);
-    student.name = name;
-    student.age = age;
-    student.grade = grade;
-    student.users = user;
+    Object.keys(updates).forEach(key => {
+      if(updates[key] !== undefined){
+
+        student[key] = updates[key];
+      }
+    });
     await student.save()
     return new Response(JSON.stringify(student), { status: 200 });
   } catch (error) {
