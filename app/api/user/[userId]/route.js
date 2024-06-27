@@ -15,16 +15,9 @@ export const GET = async (request, { params }) => {
       return new Response("User not found", { status: 404 });
     }
     
-    if (includeStudents === "true") {
-      const populatedUser = await user.populate("students");
-      return new Response(JSON.stringify(populatedUser.students), {
-        status: 200,
-      });
-    } else {
-      return new Response(JSON.stringify(user), {
-        status: 200,
-      });
-    }
+    const populated = await user.populate("students")
+
+    return new Response(JSON.stringify(populated), { status: 200 });
 
 
   } catch (error) {
@@ -36,18 +29,26 @@ export const GET = async (request, { params }) => {
 export const PATCH = async (request, { params }) => {
   await connectToDB();
   const { userId } = params;
-  const { name, email, role, password } = await request.json();
+  const updates = await request.json();
+
+  console.log("Received updates:", updates); // Log received updates
 
   try {
-    const user = await User.findById(userId)
-    user.name = name;
-    user.email = email
-    user.role = role
-    user.password = password
-    
+    const user = await User.findById(userId);
+    if (!user) {
+      return new Response("User not found", { status: 404 });
+    }
+
+    Object.keys(updates).forEach(key => {
+      if (updates[key] !== undefined) { // Check if the update is not undefined
+        user[key] = updates[key];
+      }
+    });
+
     await user.save();
     return new Response(JSON.stringify(user), { status: 200 });
   } catch (error) {
+    console.error("Failed to update user:", error);
     return new Response("Failed to update user", { status: 500 });
   }
 }

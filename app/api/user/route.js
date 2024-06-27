@@ -9,7 +9,8 @@ export const POST = async (request) => {
             email,
             password,
             role,
-            name: `${firstName} ${lastName}`
+            name: `${firstName} ${lastName}`,
+            quickNotes: [{behavior: 'testing', notes: ['note1', 'note2']}]
         });
         await user.save();
         return new Response(JSON.stringify(user), { status: 200 })

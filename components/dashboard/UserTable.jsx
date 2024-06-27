@@ -21,9 +21,9 @@ const UserTable = () => {
   const { user } = useGlobalContext();
 
   const fetchStudents = async () => {
-    const response = await fetch(`/api/user/${user.id}?includeStudents=true`);
+    const response = await fetch(`/api/user/${user.id}`);
     const data = await response.json();
-    setStudents(data);
+    setStudents(data.students);
   };
 
   const handleStudentClick = (studentId) => {

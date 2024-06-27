@@ -36,7 +36,7 @@ const SignUp = () => {
       lastName: "",
       email: "",
       password: "",
-      role: 'user'
+      role: 'user',
     },
   });
 

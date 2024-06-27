@@ -2,31 +2,31 @@
 
 import UserTable from "@/components/dashboard/UserTable";
 import { useGlobalContext } from "@/lib/GlobalProvider";
+import QuickNotesTable from "@components/dashboard/QuickNotesTable";
 import { useState, useEffect } from "react";
 
 const Dashboard = () => {
-  const [students, setStudents] = useState([]);
+  const [details, setDetails] = useState([]);
   const { user } = useGlobalContext();
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      const response = await fetch(`/api/user/${user.id}?includeStudents=true`);
+    const fetchUserDetails = async () => {
+      const response = await fetch(`/api/user/${user.id}`);
       const data = await response.json();
-      setStudents(data);
+      setDetails(data);
     };
     if (user && user.id) {
-      fetchStudents();
+      fetchUserDetails();
     }
   }, [user]);
 
   const handleButtonClick = () => {
-    console.log(students)
+    console.log(details)
   };
 
   return (
     <div>
-      <button className='ml-20' onClick={handleButtonClick}>click</button>
-      {/* {students.length !== 0 && <UserTable students={students} />} */}
+      <QuickNotesTable />
     </div>
   );
 };

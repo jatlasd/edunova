@@ -20,6 +20,10 @@ const UserSchema = new Schema({
     students: [{
         type: Schema.Types.ObjectId,
         ref: 'Student'
+    }],
+    quickNotes: [{
+        behavior: String,
+        notes: [String]
     }]
 })
 
