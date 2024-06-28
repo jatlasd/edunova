@@ -14,9 +14,9 @@ const Sessions = () => {
   const { studentId, setStudentId } = useStudentContext();
 
   const getUserDetails = async () => {
-    const response = await fetch(`/api/user/${user.id}?includeStudents=true`);
+    const response = await fetch(`/api/user/${user.id}`);
     const data = await response.json();
-    const formattedStudents = data.map((student) => ({
+    const formattedStudents = data.students.map((student) => ({
       id: student._id,
       value: student.name,
       label: student.name,

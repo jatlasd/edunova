@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useState, useEffect } from "react";
 
 const GlobalContext = createContext();
@@ -8,6 +9,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,7 +34,10 @@ export const GlobalProvider = ({ children }) => {
     setUser(null);
     setIsLoggedIn(false);
     localStorage.removeItem("user");
-    await fetch('/api/logout', { method: 'POST' });
+    const response = await fetch('/api/logout', { method: 'POST' });
+    if(response.ok) {
+      router.push('/sign-in')
+    }
   };
 
   return (

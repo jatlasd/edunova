@@ -130,76 +130,74 @@ const SessionDetailsContainer = ({ sessionId }) => {
           </div>
 
           {/* Session Details */}
-
-          {session.status === "Pending" ||
-            (session.status === "Finalized" && (
-              <div className="mt-10 flex w-1/2 flex-col items-center">
-                <Select onValueChange={(value) => setDataFilter(value)}>
-                  <SelectTrigger className="w-1/2 bg-primary-clear">
-                    <SelectValue
-                      placeholder="Select Filter"
-                      className="placeholder:font-semibold placeholder:text-primary-tint"
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white-1">
-                    <SelectGroup>
+          {(session.status === "Pending" || session.status === "Finalized") && (
+            <div className="mt-10 flex w-1/2 flex-col items-center">
+              <Select onValueChange={(value) => setDataFilter(value)}>
+                <SelectTrigger className="w-1/2 bg-primary-clear">
+                  <SelectValue
+                    placeholder="Select Filter"
+                    className="placeholder:font-semibold placeholder:text-primary-tint"
+                  />
+                </SelectTrigger>
+                <SelectContent className="bg-white-1">
+                  <SelectGroup>
+                    <SelectItem
+                      value="default"
+                      className="cursor-pointer text-base text-primary focus:bg-primary-clear focus:text-primary-tint"
+                    >
+                      All
+                    </SelectItem>
+                    {session.behaviors.map((behavior, index) => (
                       <SelectItem
-                        value="default"
+                        key={index}
+                        value={behavior.behavior}
                         className="cursor-pointer text-base text-primary focus:bg-primary-clear focus:text-primary-tint"
                       >
-                        All
+                        {behavior.behavior}
                       </SelectItem>
-                      {session.behaviors.map((behavior, index) => (
-                        <SelectItem
-                          key={index}
-                          value={behavior.behavior}
-                          className="cursor-pointer text-base text-primary focus:bg-primary-clear focus:text-primary-tint"
-                        >
-                          {behavior.behavior}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                {dataFilter === "default" ? (
-                  <div className="mt-5 grid w-full grid-cols-4 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
-                    <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
-                      Time
-                    </span>
-                    <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
-                      Behavior
-                    </span>
-                    <span className="col-span-2 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
-                      Notes
-                    </span>
-                    {allTimestamps.map((timestamp, index) => (
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {dataFilter === "default" ? (
+                <div className="mt-5 grid w-full grid-cols-4 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
+                  <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
+                    Time
+                  </span>
+                  <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
+                    Behavior
+                  </span>
+                  <span className="col-span-2 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
+                    Notes
+                  </span>
+                  {allTimestamps.map((timestamp, index) => (
+                    <React.Fragment key={index}>
+                      <span className="col-span-1">{timestamp.time}</span>
+                      <span className="col-span-1">{timestamp.behavior}</span>
+                      <span className="col-span-2">{timestamp.notes}</span>
+                    </React.Fragment>
+                  ))}
+                </div>
+              ) : (
+                <div className="ml-16 mt-5 grid w-full grid-cols-3 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
+                  <span className="col-span-1 w-1/2 text-lg font-bold text-primary-tint border-b-2 border-primary-clear">
+                    Time
+                  </span>
+                  <span className="col-span-2 w-1/2 text-lg font-bold text-primary-tint border-b-2 border-primary-clear">
+                    Notes
+                  </span>
+                  {allTimestamps
+                    .filter((timestamp) => timestamp.behavior === dataFilter)
+                    .map((timestamp, index) => (
                       <React.Fragment key={index}>
                         <span className="col-span-1">{timestamp.time}</span>
-                        <span className="col-span-1">{timestamp.behavior}</span>
                         <span className="col-span-2">{timestamp.notes}</span>
                       </React.Fragment>
                     ))}
-                  </div>
-                ) : (
-                  <div className="ml-16 mt-5 grid w-full grid-cols-3 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
-                    <span className="col-span-1 text-lg font-bold text-primary-tint">
-                      Time
-                    </span>
-                    <span className="col-span-2 text-lg font-bold text-primary-tint">
-                      Notes
-                    </span>
-                    {allTimestamps
-                      .filter((timestamp) => timestamp.behavior === dataFilter)
-                      .map((timestamp, index) => (
-                        <React.Fragment key={index}>
-                          <span className="col-span-1">{timestamp.time}</span>
-                          <span className="col-span-2">{timestamp.notes}</span>
-                        </React.Fragment>
-                      ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                </div>
+              )}
+            </div>
+          )}
           {session.notes && (
             <div className="ml-10 mt-10 flex w-1/2 flex-col rounded-md bg-white-1 p-5 shadow-md">
               <span className="w-1/2 border-b-2 border-b-primary/20 pl-2 text-lg font-bold text-primary-tint">
@@ -212,7 +210,6 @@ const SessionDetailsContainer = ({ sessionId }) => {
           )}
 
           {/* Buttons */}
-
           <div className="mt-8 flex w-full flex-col items-center gap-2">
             <div className="flex w-1/2 items-center">
               {session.status === "Initialized" && (
