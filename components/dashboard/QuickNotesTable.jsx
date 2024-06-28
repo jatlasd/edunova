@@ -169,7 +169,7 @@ const QuickNotesTable = () => {
                   {confirmingDelete.type === 'behavior' && confirmingDelete.behaviorId === detail._id ? (
                     <div className="flex items-center">
                       <button
-                        className="mr-2 rounded-md bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600"
+                        className="btn-secondary mr-2"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteBehavior(detail._id);
@@ -187,7 +187,7 @@ const QuickNotesTable = () => {
                     </div>
                   ) : (
                     <Trash2Icon
-                      className="text-secondary ml-5 hidden cursor-pointer group-data-[state=open]:block"
+                      className="text-secondary mr-10 hidden cursor-pointer group-data-[state=open]:block"
                       onClick={(e) => {
                         e.stopPropagation();
                         setConfirmingDelete({ type: 'behavior', behaviorId: detail._id, noteIndex: null });
@@ -212,13 +212,13 @@ const QuickNotesTable = () => {
                         />
                         <div className="flex gap-2">
                           <button
-                            className="rounded-md bg-primary px-2 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint"
+                            className="btn-primary"
                             onClick={() => handleSaveEdit(detail._id)}
                           >
                             Save
                           </button>
                           <button
-                            className="rounded-md bg-secondary px-2 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
+                            className="btn-secondary"
                             onClick={handleCancelEdit}
                           >
                             Cancel
@@ -232,7 +232,7 @@ const QuickNotesTable = () => {
                         </span>
                         <div className="flex gap-7">
                           <button
-                            className="rounded-md bg-primary px-2 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint"
+                            className="btn-primary"
                             onClick={() =>
                               handleEditClick(detail._id, index, note)
                             }
@@ -244,7 +244,7 @@ const QuickNotesTable = () => {
                            confirmingDelete.noteIndex === index ? (
                             <div className="flex items-center">
                               <button
-                                className="mr-2 rounded-md bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600"
+                                className="mr-2 btn-secondary"
                                 onClick={() => handleDeleteNote(detail._id, index)}
                               >
                                 Confirm
@@ -256,7 +256,7 @@ const QuickNotesTable = () => {
                             </div>
                           ) : (
                             <button
-                              className="rounded-md bg-secondary px-2 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
+                              className="btn-secondary"
                               onClick={() => setConfirmingDelete({ type: 'note', behaviorId: detail._id, noteIndex: index })}
                             >
                               Delete
@@ -280,13 +280,13 @@ const QuickNotesTable = () => {
                         handleAddQuickNote(detail._id);
                         setIsAddNewNote(false);
                       }}
-                      className="rounded-md bg-primary px-3 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint"
+                      className="btn-primary"
                     >
                       Add Note
                     </button>
                     <button
                       onClick={() => setIsAddNewNote(false)}
-                      className="rounded-md bg-secondary px-3 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
+                      className="btn-secondary"
                     >
                       Cancel
                     </button>
@@ -294,7 +294,7 @@ const QuickNotesTable = () => {
                 ) : (
                   <div className="mt-4 flex w-full justify-center">
                     <button
-                      className="rounded-md bg-primary px-3 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint"
+                      className="btn-primary"
                       onClick={() => setIsAddNewNote(true)}
                     >
                       Add New Note
@@ -306,7 +306,7 @@ const QuickNotesTable = () => {
           ))}
         </Accordion>
         {isAddNewBehavior ? (
-          <div className="mx-5 mt-4 flex items-center gap-4">
+          <div className="mx-5 mt-4 flex items-center gap-4 mb-5">
             <input
               value={newBehaviorText}
               onChange={(e) => setNewBehaviorText(e.target.value)}
@@ -315,20 +315,20 @@ const QuickNotesTable = () => {
             />
             <button
               onClick={handleAddBehavior}
-              className="rounded-md bg-primary px-3 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint"
+              className="btn-primary"
             >
               Add Behavior
             </button>
             <button
               onClick={() => setIsAddNewBehavior(false)}
-              className="rounded-md bg-secondary px-3 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
+              className="btn-secondary"
             >
               Cancel
             </button>
           </div>
         ) : (
           <button
-            className="mx-5 mb-4 rounded-md bg-primary px-3 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint"
+            className="mx-5 mb-4 btn-primary"
             onClick={() => setIsAddNewBehavior(true)}
           >
             Add Behavior Quick Notes

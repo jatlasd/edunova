@@ -109,6 +109,14 @@ main {
     @apply bg-primary-clear font-bold text-primary-tint;
   }
 
+  .btn-primary {
+    @apply rounded-md bg-primary px-2 py-1 text-base text-white-1 transition-colors duration-75 hover:bg-primary-tint
+  }
+
+  .btn-secondary {
+    @apply rounded-md bg-secondary px-2 py-1 text-sm text-white-1 hover:bg-secondary-tint
+  }
+
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
