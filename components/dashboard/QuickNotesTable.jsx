@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Trash2Icon, X } from "lucide-react";
 
 const QuickNotesTable = () => {
   const [details, setDetails] = useState([]);
@@ -21,6 +22,11 @@ const QuickNotesTable = () => {
   const [isAddNewNote, setIsAddNewNote] = useState(false);
   const [newBehaviorText, setNewBehaviorText] = useState("");
   const [isAddNewBehavior, setIsAddNewBehavior] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState({
+    type: null,
+    behaviorId: null,
+    noteIndex: null,
+  });
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -75,22 +81,6 @@ const QuickNotesTable = () => {
     await updateQuickNotesInDB(updatedDetails);
   };
 
-  const handleDeleteNote = async (behaviorId, noteIndex) => {
-    const updatedDetails = details.map((detail) => {
-      if (detail._id === behaviorId) {
-        const updatedNotes = detail.notes.filter(
-          (_, index) => index !== noteIndex,
-        );
-        return { ...detail, notes: updatedNotes };
-      }
-      return detail;
-    });
-
-    setDetails(updatedDetails);
-
-    await updateQuickNotesInDB(updatedDetails);
-  };
-
   const updateUserContext = (updatedDetails) => {
     setUser((prevUser) => ({
       ...prevUser,
@@ -141,6 +131,23 @@ const QuickNotesTable = () => {
     );
     setDetails(updatedDetails);
     await updateQuickNotesInDB(updatedDetails);
+    setConfirmingDelete({ type: null, behaviorId: null, noteIndex: null });
+  };
+
+  const handleDeleteNote = async (behaviorId, noteIndex) => {
+    const updatedDetails = details.map((detail) => {
+      if (detail._id === behaviorId) {
+        const updatedNotes = detail.notes.filter(
+          (_, index) => index !== noteIndex,
+        );
+        return { ...detail, notes: updatedNotes };
+      }
+      return detail;
+    });
+
+    setDetails(updatedDetails);
+    await updateQuickNotesInDB(updatedDetails);
+    setConfirmingDelete({ type: null, behaviorId: null, noteIndex: null });
   };
 
   return (
@@ -149,31 +156,44 @@ const QuickNotesTable = () => {
         <span className="mt-4 flex self-center text-3xl font-bold text-primary-tint">
           Quick Notes
         </span>
-        {details.map((detail) => (
-          <Accordion
-            key={detail._id}
-            type="single"
-            collapsible
-            className="mx-5"
-          >
+        <Accordion type="single" collapsible className="mx-5">
+          {details.map((detail) => (
             <AccordionItem
-              value={detail.behavior}
+              key={detail._id}
+              value={detail._id}
               className="mb-2 overflow-hidden rounded-lg transition-all duration-300 ease-in-out data-[state=open]:shadow-md"
             >
-              <AccordionTrigger className="px-4 py-3 text-xl font-semibold text-primary transition-colors duration-300 hover:text-primary-tint data-[state=open]:border-b data-[state=open]:border-b-primary/10 data-[state=open]:bg-primary-clear data-[state=open]:text-primary-tint">
+              <AccordionTrigger className="group px-4 py-3 text-xl font-semibold text-primary transition-colors duration-300 hover:text-primary-tint data-[state=open]:border-b data-[state=open]:border-b-primary/10 data-[state=open]:bg-primary-clear data-[state=open]:text-primary-tint">
                 <div className="flex w-full items-center justify-between">
                   <span>{detail.behavior}</span>
-                  <div // Changed from button to div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteBehavior(detail._id);
-                    }}
-                    className="cursor-pointer rounded-md bg-secondary px-2 py-1 text-sm text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
-                    role="button" // Accessibility role
-                    tabIndex="0" // Make it focusable
-                  >
-                    Delete Behavior
-                  </div>
+                  {confirmingDelete.type === 'behavior' && confirmingDelete.behaviorId === detail._id ? (
+                    <div className="flex items-center">
+                      <button
+                        className="mr-2 rounded-md bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteBehavior(detail._id);
+                        }}
+                      >
+                        Confirm
+                      </button>
+                      <X
+                        className="cursor-pointer text-gray-500 hover:text-gray-700"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setConfirmingDelete({ type: null, behaviorId: null, noteIndex: null });
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <Trash2Icon
+                      className="text-secondary ml-5 hidden cursor-pointer group-data-[state=open]:block"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmingDelete({ type: 'behavior', behaviorId: detail._id, noteIndex: null });
+                      }}
+                    />
+                  )}
                 </div>
               </AccordionTrigger>
               <AccordionContent className="bg-white data-[state=open]:animate-accordionSlideDown px-4 py-2">
@@ -219,12 +239,29 @@ const QuickNotesTable = () => {
                           >
                             Edit
                           </button>
-                          <button
-                            className="rounded-md bg-secondary px-2 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
-                            onClick={() => handleDeleteNote(detail._id, index)}
-                          >
-                            Delete
-                          </button>
+                          {confirmingDelete.type === 'note' && 
+                           confirmingDelete.behaviorId === detail._id && 
+                           confirmingDelete.noteIndex === index ? (
+                            <div className="flex items-center">
+                              <button
+                                className="mr-2 rounded-md bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600"
+                                onClick={() => handleDeleteNote(detail._id, index)}
+                              >
+                                Confirm
+                              </button>
+                              <X
+                                className="cursor-pointer text-gray-500 hover:text-gray-700"
+                                onClick={() => setConfirmingDelete({ type: null, behaviorId: null, noteIndex: null })}
+                              />
+                            </div>
+                          ) : (
+                            <button
+                              className="rounded-md bg-secondary px-2 py-2 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint"
+                              onClick={() => setConfirmingDelete({ type: 'note', behaviorId: detail._id, noteIndex: index })}
+                            >
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </>
                     )}
@@ -266,8 +303,8 @@ const QuickNotesTable = () => {
                 )}
               </AccordionContent>
             </AccordionItem>
-          </Accordion>
-        ))}
+          ))}
+        </Accordion>
         {isAddNewBehavior ? (
           <div className="mx-5 mt-4 flex items-center gap-4">
             <input
