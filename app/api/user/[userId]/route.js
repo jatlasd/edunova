@@ -31,7 +31,7 @@ export const PATCH = async (request, { params }) => {
   const { userId } = params;
   const updates = await request.json();
 
-  console.log("Received updates:", updates); // Log received updates
+  console.log("Received updates:", JSON.stringify(updates, null, 2)); // Log received updates
 
   try {
     const user = await User.findById(userId);
@@ -41,11 +41,15 @@ export const PATCH = async (request, { params }) => {
 
     Object.keys(updates).forEach(key => {
       if (updates[key] !== undefined) { // Check if the update is not undefined
+        if (key === 'quickNotes') {
+          console.log("Updating quickNotes:", JSON.stringify(updates[key], null, 2));
+        }
         user[key] = updates[key];
       }
     });
 
     await user.save();
+    console.log("User updated successfully");
     return new Response(JSON.stringify(user), { status: 200 });
   } catch (error) {
     console.error("Failed to update user:", error);

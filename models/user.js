@@ -1,5 +1,10 @@
 import { Schema, model, models } from "mongoose";
 
+const QuickNoteSchema = new Schema({
+  behavior: String,
+  notes: [String]
+});
+
 const UserSchema = new Schema({
     email: {
         type: String,
@@ -21,11 +26,8 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Student'
     }],
-    quickNotes: [{
-        behavior: String,
-        notes: [String]
-    }]
-})
+    quickNotes: [QuickNoteSchema]
+});
 
 const User = models.User || model('User', UserSchema);
 export default User;

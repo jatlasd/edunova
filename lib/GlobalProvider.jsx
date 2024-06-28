@@ -21,6 +21,7 @@ export const GlobalProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    console.log('running')
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     } else {
