@@ -18,6 +18,10 @@ const SessionSchema = new Schema({
     finishedDate: {
         type: String
     },
+    scheduledDate: {
+        type: Date,
+        required: true,
+    },
     status: {
         type: String,
         default: 'Pending',

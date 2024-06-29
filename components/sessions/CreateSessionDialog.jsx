@@ -14,15 +14,26 @@ import {
   Form,
   FormControl,
   FormField,
+  FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@lib/utils";
+import { Calendar } from "@components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
+
 import { useGlobalContext } from "@lib/GlobalProvider";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useStudentContext } from "@lib/StudentProvider";
 
 const formSchema = z.object({
@@ -33,6 +44,7 @@ const formSchema = z.object({
   createdDate: z.string(),
   status: z.string(),
   staff: z.string(),
+  scheduledDate: z.date(),
   behaviors: z.array(
     z.object({
       behavior: z.string(),
@@ -47,7 +59,10 @@ const formSchema = z.object({
   ),
 });
 
+
+
 const CreateSessionDialog = () => {
+  const pathname = usePathname()
   const router = useRouter();
   const { user } = useGlobalContext();
   const { student, studentId } = useStudentContext();
@@ -55,12 +70,13 @@ const CreateSessionDialog = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      student: studentId,
+      student: student ? student._id : "",
       createdDate: new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
       }),
+      scheduledDate: format(new Date(), "yyyy-MM-dd"),
       finishedDate: "",
       status: "Initialized",
       staff: "",
@@ -71,16 +87,19 @@ const CreateSessionDialog = () => {
   });
 
   useEffect(() => {
+    if(student) {
+     form.setValue('student', student._id)
+    }
     if (user) {
       form.setValue("staff", user.id);
     }
-  }, [user]);
+  }, [user, student]);
 
   const [behaviors, setBehaviors] = useState([]);
   const [selectedBehaviors, setSelectedBehaviors] = useState([]);
 
   useEffect(() => {
-    if(student) {
+    if (student) {
       const initialBehaviors = student.behaviors.map((behavior) => ({
         ...behavior,
         isSelected: false,
@@ -102,11 +121,13 @@ const CreateSessionDialog = () => {
   };
 
   async function onSubmit(data, event) {
+    console.log("onsubmit called");
     event.preventDefault();
     const selectedData = selectedBehaviors.filter((b) => b.isSelected);
 
     const updatedData = {
       ...data,
+      scheduledDate: format(data.scheduledDate, "yyyy-MM-dd"),
       behaviors: selectedData.map((behavior) => ({
         behavior: behavior.behavior,
         count: 0,
@@ -116,6 +137,8 @@ const CreateSessionDialog = () => {
             : [],
       })),
     };
+
+    console.log(updatedData);
 
     try {
       const response = await fetch("/api/session", {
@@ -131,9 +154,14 @@ const CreateSessionDialog = () => {
       const session = await response.json();
       router.push(`/sessions/${session._id}`);
     } catch (error) {
-      console.error(error);
+      console.log(error.message);
     }
   }
+
+  const showDate = () => {
+    const today = new Date();
+    console.log(today);
+  };
 
   return (
     <Dialog>
@@ -147,15 +175,17 @@ const CreateSessionDialog = () => {
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
+          <button onClick={showDate}>click</button>
           <DialogTitle className="text-xl text-primary-tint">
             Create New Session
           </DialogTitle>
         </DialogHeader>
         <div>
-          <button onClick={() => console.log(student.behaviors)}>click</button>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmit, (errors) =>
+                console.log(errors),
+              )}
               className="flex flex-col space-y-3"
             >
               <FormField
@@ -175,6 +205,47 @@ const CreateSessionDialog = () => {
                       <FormMessage className="form-message" />
                     </div>
                   </div>
+                )}
+              ></FormField>
+              <FormField
+                control={form.control}
+                name="scheduledDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="form-label">Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[240px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto bg-white-1 p-0"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
                 )}
               ></FormField>
               {/* Behavior checkboxes */}
