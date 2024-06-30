@@ -26,7 +26,11 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Student'
     }],
-    quickNotes: [QuickNoteSchema]
+    quickNotes: [QuickNoteSchema],
+    sessions: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Sessionn'
+    }]
 });
 
 const User = models.User || model('User', UserSchema);

@@ -24,6 +24,11 @@ export const POST = async (request) => {
             studentDoc.sessions.push(session._id);
             await studentDoc.save();
         }
+        const staffDoc = await User.findById(staff);
+        if (staffDoc) {
+            staffDoc.sessions.push(session._id);
+            await staffDoc.save();
+        }
         return new Response(JSON.stringify(session), { status: 200 });
     } catch (error) {
         console.error("Error occurred:", error);  

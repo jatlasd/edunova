@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 
 import {
   Command,
@@ -17,22 +18,47 @@ import {
 
 const ComboBox = ({ options, value, setValue }) => {
   const [open, setOpen] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState("Select Student");
+
+  useEffect(() => {
+    const selected = options.find(option => option.id === value);
+    if (selected) {
+      setSelectedLabel(selected.label);
+    } else {
+      setSelectedLabel("Select Student");
+    }
+  }, [value, options]);
 
   const handleSelect = (option) => {
-    const newValue = option.id === value.id ? { id: "", label: "" } : option;
-    setValue(newValue.id);
+    setValue(option.id === value ? "" : option.id);
     setOpen(false);
+  };
+
+  const handleClear = (e) => {
+    e.stopPropagation();
+    setValue("");
+    setSelectedLabel("Select Student");
   };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
-          className="w-[200px] justify-between bg-white-1 mx-4 my-2 rounded-md px-2 py-1 text-primary-tint font-semibold text-lg"
-          aria-expanded={open}
-        >
-          {value && value.label ? value.label : "Select Student"}
-        </button>
+        <div className="relative w-[200px]">
+          <button
+            className="w-full justify-between bg-white-1 mx-4 my-2 rounded-md px-2 py-1 text-primary-tint font-semibold text-lg"
+            aria-expanded={open}
+          >
+            {selectedLabel}
+          </button>
+          {value && (
+            <button
+              onClick={handleClear}
+              className="absolute right-6 top-1/2 transform -translate-y-1/2 text-primary-tint"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
       </PopoverTrigger>
       <PopoverContent className='bg-white-1'>
         <Command>
@@ -46,7 +72,7 @@ const ComboBox = ({ options, value, setValue }) => {
                   onSelect={() => handleSelect(option)}
                   className='text-primary-tint'
                 >
-                  {option.value}
+                  {option.label}
                 </CommandItem>
               ))}
             </CommandGroup>

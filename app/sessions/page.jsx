@@ -28,7 +28,6 @@ const Sessions = () => {
     if (user) {
       getUserDetails();
     }
-
   }, [user, studentId]);
 
   return (
@@ -47,48 +46,6 @@ const Sessions = () => {
             />
           )}
           <SessionListTable />
-          {/* {selectedStudent.id !== "" && (
-            <div className="mt-10 flex w-4/5 flex-col items-center rounded-md">
-              <h1 className="mt-2 text-3xl font-bold text-primary-tint">
-                Sessions for {selectedStudent.label}
-              </h1>
-              {sessions.length > 0 ? (
-                <Table className='mt-5'>
-                  <TableHeader>
-                    <TableRow isHeader={true}>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Created Date</TableHead>
-                      <TableHead>Finished Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sessions.map((session) => (
-                      <TableRow
-                        key={session._id}
-                        onClick={() => router.push(`/sessions/${session._id}`)}
-                        className="cursor-pointer"
-                      >
-                        <TableCell>{session.name}</TableCell>
-                        <TableCell>{session.status}</TableCell>
-                        <TableCell>{session.createdDate}</TableCell>
-                        <TableCell>{session.finishedDate}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : (
-                <div>
-                  <h1>No Sessions Found</h1>
-                </div>
-              )}
-              <div className="mt-10">
-                {selectedStudent.id !== "" && (
-                  <CreateSessionDialog studentId={selectedStudent.id} />
-                )}
-              </div>
-            </div>
-          )} */}
         </div>
       </div>
     </>

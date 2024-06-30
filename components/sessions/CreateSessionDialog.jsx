@@ -30,6 +30,16 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { useGlobalContext } from "@lib/GlobalProvider";
 
 import { useState, useEffect } from "react";
@@ -59,13 +69,13 @@ const formSchema = z.object({
   ),
 });
 
-
-
 const CreateSessionDialog = () => {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const router = useRouter();
   const { user } = useGlobalContext();
   const { student, studentId } = useStudentContext();
+  const [selectedStudent, setSelectedStudent] = useState(student)
+  const [allStudents, setAllStudents] = useState([]);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -87,11 +97,23 @@ const CreateSessionDialog = () => {
   });
 
   useEffect(() => {
-    if(student) {
-     form.setValue('student', student._id)
+    const fetchAllStudents = async () => {
+      try {
+        const response = await fetch(`/api/user/${user.id}`);
+        const data = await response.json();
+        setAllStudents(data.students);
+      } catch (error) {
+        consolr.log(error.message);
+      }
+    };
+    if (student) {
+      form.setValue("student", student._id);
     }
     if (user) {
       form.setValue("staff", user.id);
+      if (pathname === "/sessions") {
+        fetchAllStudents();
+      }
     }
   }, [user, student]);
 
@@ -175,7 +197,7 @@ const CreateSessionDialog = () => {
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <button onClick={showDate}>click</button>
+          <button onClick={() => console.log(allStudents)}>click</button>
           <DialogTitle className="text-xl text-primary-tint">
             Create New Session
           </DialogTitle>
@@ -188,6 +210,31 @@ const CreateSessionDialog = () => {
               )}
               className="flex flex-col space-y-3"
             >
+              {pathname === '/sessions' && (
+                <FormField
+                  control={form.control}
+                  name='student'
+                  render={({field}) => (
+                    <div className="flex flex-col gap-1.5">
+                      <FormLabel className='form-label'>Student</FormLabel>
+                      <Select onValueChange={field.onChange} defaultVaule={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue  placeholder="Select a student"/>
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className='bg-white-1'>
+                          {allStudents.map((student) => (
+                            <SelectItem key={student._id} value={student._id}>{student.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                >
+
+                </FormField>
+              )}
               <FormField
                 control={form.control}
                 name="name"
@@ -240,7 +287,6 @@ const CreateSessionDialog = () => {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          
                           initialFocus
                         />
                       </PopoverContent>
