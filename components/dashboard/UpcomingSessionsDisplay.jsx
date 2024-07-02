@@ -21,9 +21,9 @@ const UpcomingTable = ({ sessions }) => {
     <Table>
       <TableHeader>
         <TableRow isHeader={true}>
-          <TableHead>Student</TableHead>
-          <TableHead>Session Name</TableHead>
-          <TableHead>Scheduled Date</TableHead>
+          <TableHead className="text-center">Student</TableHead>
+          <TableHead className="text-center">Session Name</TableHead>
+          <TableHead className="text-center">Scheduled Date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -31,13 +31,12 @@ const UpcomingTable = ({ sessions }) => {
           <TableRow
             key={session._id}
             onClick={() => router.push(`/sessions/${session._id}`)}
+            className="cursor-pointer"
           >
             <TableCell>{session.student.name}</TableCell>
             <TableCell>{session.name}</TableCell>
             <TableCell>
-              {format(new Date(session.scheduledDate), "MM-dd-yyyy", {
-                timeZone: "UTC",
-              })}
+              {format(new Date(session.scheduledDate), "MM-dd-yyyy")}
             </TableCell>
           </TableRow>
         ))}
@@ -77,34 +76,42 @@ const UpcomingSessionsDisplay = () => {
 
   return (
     <div className="mx-10 mt-10 flex flex-col items-center gap-5">
-      <h1 className="text-2xl font-bold text-primary-tint w-1/3 border-b border-b-primary/30 text-center">Upcoming Scheduled Sessions</h1>
-        <div className="flex gap-5 justify-evenly">
+      <h1 className="w-1/3 border-b border-b-primary/30 text-center text-2xl font-bold text-primary-tint">
+        Upcoming Scheduled Sessions
+      </h1>
+      <div className="flex justify-evenly gap-5">
         <div className="flex flex-col items-center rounded-md bg-primary-clear p-5 shadow-md">
-        <h2 className="p-5 text-xl font-bold text-primary-tint">Tomorrow</h2>
-        {sortedSessions.tomorrow ? (
-          <UpcomingTable sessions={sortedSessions.tomorrow} />
-        ) : (
-          <h2>No sessions scheduled for tomorrow.</h2>
-        )}
-      </div>
-      <div className="flex flex-col items-center rounded-md bg-primary-clear p-5 shadow-md">
-        <h2 className="p-5 text-xl font-bold text-primary-tint">This Week</h2>
-        {sortedSessions.tomorrow ? (
-          <UpcomingTable sessions={sortedSessions.thisWeek} />
-        ) : (
-          <h2>No sessions scheduled for tomorrow.</h2>
-        )}
-      </div>
-      <div className="flex flex-col items-center rounded-md bg-primary-clear p-5 shadow-md">
-        <h2 className="p-5 text-xl font-bold text-primary-tint">This Month</h2>
-        {sortedSessions.tomorrow ? (
-          <UpcomingTable sessions={sortedSessions.thisMonth} />
-        ) : (
-          <h2>No sessions scheduled for tomorrow.</h2>
-        )}
-      </div>
+          <h2 className="mb-5 border-b border-b-primary/20 px-5 pt-5 text-xl font-bold text-primary-tint">
+            Tomorrow
+          </h2>
+          {sortedSessions.tomorrow && sortedSessions.tomorrow.length > 0 ? (
+            <UpcomingTable sessions={sortedSessions.tomorrow} />
+          ) : (
+            <h2>No sessions scheduled for tomorrow.</h2>
+          )}
         </div>
-    </div> 
+        <div className="flex flex-col items-center rounded-md bg-primary-clear p-5 shadow-md">
+          <h2 className="mb-5 border-b border-b-primary/20 px-5 pt-5 text-xl font-bold text-primary-tint">
+            This Week
+          </h2>
+          {sortedSessions.thisWeek && sortedSessions.thisWeek.length > 0 ? (
+            <UpcomingTable sessions={sortedSessions.thisWeek} />
+          ) : (
+            <h2>No sessions scheduled for tomorrow.</h2>
+          )}
+        </div>
+        <div className="flex flex-col items-center rounded-md bg-primary-clear p-5 shadow-md">
+          <h2 className="mb-5 border-b border-b-primary/20 px-5 pt-5 text-xl font-bold text-primary-tint">
+            This Month
+          </h2>
+          {sortedSessions.thisMonth && sortedSessions.thisMonth.length > 0 ? (
+            <UpcomingTable sessions={sortedSessions.thisMonth} />
+          ) : (
+            <h2>No sessions scheduled for tomorrow.</h2>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
