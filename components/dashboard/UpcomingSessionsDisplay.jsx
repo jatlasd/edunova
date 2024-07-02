@@ -97,7 +97,7 @@ const UpcomingSessionsDisplay = () => {
           {sortedSessions.thisWeek && sortedSessions.thisWeek.length > 0 ? (
             <UpcomingTable sessions={sortedSessions.thisWeek} />
           ) : (
-            <h2>No sessions scheduled for tomorrow.</h2>
+            <h2>No sessions scheduled for this week.</h2>
           )}
         </div>
         <div className="flex flex-col items-center rounded-md bg-primary-clear p-5 shadow-md">
@@ -107,7 +107,7 @@ const UpcomingSessionsDisplay = () => {
           {sortedSessions.thisMonth && sortedSessions.thisMonth.length > 0 ? (
             <UpcomingTable sessions={sortedSessions.thisMonth} />
           ) : (
-            <h2>No sessions scheduled for tomorrow.</h2>
+            <h2>No sessions scheduled for this month.</h2>
           )}
         </div>
       </div>
