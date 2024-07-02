@@ -3,6 +3,7 @@
 import UserTable from "@/components/dashboard/UserTable";
 import { useGlobalContext } from "@/lib/GlobalProvider";
 import QuickNotesTable from "@components/dashboard/QuickNotesTable";
+import UpcomingSessionsDisplay from "@components/dashboard/UpcomingSessionsDisplay";
 import { useState, useEffect } from "react";
 
 const Dashboard = () => {
@@ -25,8 +26,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <QuickNotesTable />
+      <UpcomingSessionsDisplay />
     </div>
   );
 };

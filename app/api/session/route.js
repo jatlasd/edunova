@@ -19,16 +19,23 @@ export const POST = async (request) => {
             scheduledDate
         });
         await session.save();
+
         const studentDoc = await Student.findById(student);
         if (studentDoc) {
             studentDoc.sessions.push(session._id);
             await studentDoc.save();
+        } else {
+            console.error("No student found with ID:", student);
         }
+
         const staffDoc = await User.findById(staff);
         if (staffDoc) {
             staffDoc.sessions.push(session._id);
             await staffDoc.save();
+        } else {
+            console.error("No staff found with ID:", staff);
         }
+
         return new Response(JSON.stringify(session), { status: 200 });
     } catch (error) {
         console.error("Error occurred:", error);  

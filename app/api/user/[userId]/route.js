@@ -1,6 +1,7 @@
 import { connectToDB } from "@/lib/database";
 import User from "@/models/user";
 import Student from "@/models/student";
+import Session from "@/models/session";
 
 export const GET = async (request, { params }) => {
   await connectToDB();
@@ -15,8 +16,13 @@ export const GET = async (request, { params }) => {
       return new Response("User not found", { status: 404 });
     }
     
-    const populated = await user.populate("students")
-
+    const populated = await user.populate(['students',{
+      path: "sessions",
+      populate: {
+        path: "student",
+        select: "name"
+      }
+    }]);
     return new Response(JSON.stringify(populated), { status: 200 });
 
 
@@ -31,7 +37,7 @@ export const PATCH = async (request, { params }) => {
   const { userId } = params;
   const updates = await request.json();
 
-  console.log("Received updates:", JSON.stringify(updates, null, 2)); // Log received updates
+  console.log("Received updates:", JSON.stringify(updates, null, 2)); 
 
   try {
     const user = await User.findById(userId);
@@ -40,7 +46,7 @@ export const PATCH = async (request, { params }) => {
     }
 
     Object.keys(updates).forEach(key => {
-      if (updates[key] !== undefined) { // Check if the update is not undefined
+      if (updates[key] !== undefined) { 
         if (key === 'quickNotes') {
           console.log("Updating quickNotes:", JSON.stringify(updates[key], null, 2));
         }

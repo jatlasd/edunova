@@ -151,7 +151,7 @@ const QuickNotesTable = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-7">
+    <div className="flex flex-col items-center gap-7 w-full">
       <div className="flex w-1/2 flex-col gap-3 bg-primary-clear shadow-md">
         <span className="mt-4 flex self-center text-3xl font-bold text-primary-tint">
           Quick Notes

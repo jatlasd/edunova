@@ -29,7 +29,7 @@ const UserSchema = new Schema({
     quickNotes: [QuickNoteSchema],
     sessions: [{
         type: Schema.Types.ObjectId,
-        ref: 'Sessionn'
+        ref: 'Session'
     }]
 });
 

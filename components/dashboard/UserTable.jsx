@@ -23,6 +23,7 @@ const UserTable = () => {
   const fetchStudents = async () => {
     const response = await fetch(`/api/user/${user.id}`);
     const data = await response.json();
+    console.log(data)
     setStudents(data.students);
   };
 
