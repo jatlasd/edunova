@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useStudentContext } from "@lib/StudentProvider";
 
 const UserTable = () => {
-  const { student, setStudentId } = useStudentContext();
+  const { setStudentData } = useStudentContext();
   const router = useRouter();
   const [students, setStudents] = useState([]);
   const { user } = useGlobalContext();
@@ -23,13 +23,19 @@ const UserTable = () => {
   const fetchStudents = async () => {
     const response = await fetch(`/api/user/${user.id}`);
     const data = await response.json();
-    console.log(data)
+    console.log(data);
     setStudents(data.students);
   };
 
-  const handleStudentClick = (studentId) => {
-    setStudentId(studentId);
-    router.push(`/students/${studentId}`);
+  const handleStudentClick = async (studentId) => {
+    try {
+      const response = await fetch(`/api/student/${studentId}`);
+      const data = await response.json();
+      setStudentData(studentId, data.student);
+      router.push(`/students/${studentId}`);
+    } catch (error) {
+      console.error("Failed to fetch student data:", error);
+    }
   };
 
   useEffect(() => {

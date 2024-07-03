@@ -3,7 +3,7 @@
 import ComboBox from "@components/ComboBox";
 import Header from "@components/Header";
 import { useGlobalContext } from "@lib/GlobalProvider";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import SessionListTable from "@components/sessions/SessionListTable";
 import { useStudentContext } from "@lib/StudentProvider";
@@ -11,24 +11,48 @@ import { useStudentContext } from "@lib/StudentProvider";
 const Sessions = () => {
   const { user } = useGlobalContext();
   const [students, setStudents] = useState([]);
-  const { studentId, setStudentId } = useStudentContext();
+  const { studentId, setStudentData } = useStudentContext();
+  const [isLoading, setIsLoading] = useState(true);
 
   const getUserDetails = async () => {
-    const response = await fetch(`/api/user/${user.id}`);
-    const data = await response.json();
-    const formattedStudents = data.students.map((student) => ({
-      id: student._id,
-      value: student.name,
-      label: student.name,
-    }));
-    setStudents(formattedStudents);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/user/${user.id}`);
+      const data = await response.json();
+      const formattedStudents = data.students.map((student) => ({
+        id: student._id,
+        value: student.name,
+        label: student.name,
+      }));
+      setStudents(formattedStudents);
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
     if (user) {
       getUserDetails();
     }
-  }, [user, studentId]);
+  }, [user]);
+
+  const handleSetStudentId = useCallback(async (newStudentId) => {
+    setIsLoading(true);
+    if (newStudentId) {
+      try {
+        const response = await fetch(`/api/student/${newStudentId}`);
+        const data = await response.json();
+        setStudentData(newStudentId, data.student);
+      } catch (error) {
+        console.error("Failed to fetch student data:", error);
+      }
+    } else {
+      setStudentData(null, null);
+    }
+    setIsLoading(false);
+  }, [setStudentData]);
 
   return (
     <>
@@ -42,10 +66,10 @@ const Sessions = () => {
             <ComboBox
               options={students}
               value={studentId}
-              setValue={setStudentId}
+              setValue={handleSetStudentId}
             />
           )}
-          <SessionListTable />
+          <SessionListTable parentIsLoading={isLoading} />
         </div>
       </div>
     </>

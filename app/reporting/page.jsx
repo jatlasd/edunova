@@ -1,8 +1,11 @@
+import ReportContainer from '@components/reporting/ReportContainer'
 import React from 'react'
 
 const Reporting = () => {
   return (
-    <div>Reporting</div>
+    <div>
+        <ReportContainer />
+    </div>
   )
 }
 

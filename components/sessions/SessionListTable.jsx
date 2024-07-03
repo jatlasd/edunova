@@ -11,14 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGlobalContext } from "@lib/GlobalProvider";
 import { useStudentContext } from "@lib/StudentProvider";
 
 const SessionListTable = () => {
-  const { user } = useGlobalContext();
-  const { student, studentId } = useStudentContext();
+  const { student, clearStudent } = useStudentContext();
+  const [sessionsLoaded, setSessionsLoaded] = useState(false);
   const pathname = usePathname();
-  const router = useRouter()
+  const router = useRouter();
   const [sessions, setSessions] = useState([]);
   const [isShouldAdd, setIsShouldAdd] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,20 +28,21 @@ const SessionListTable = () => {
     const updateSessions = () => {
       setIsLoading(true);
       timeoutId = setTimeout(() => {
-        if (pathname.startsWith('/students')) {
-          setSessions(student?.sessions || []);
-          setIsShouldAdd(false);
-        } else if (pathname.startsWith('/sessions')) {
-          if (studentId) {
-            setSessions(student?.sessions || []);
-            setIsShouldAdd(true);
-          } else {
+        if (student) {
+          if (pathname === "/sessions" && sessionsLoaded === false) {
+            clearStudent();
             setSessions([]);
-            setIsShouldAdd(false);
+            setSessionsLoaded(true);
+          } else {
+            setSessions(student.sessions || []);
+            setIsShouldAdd(pathname.startsWith("/sessions/"));
           }
+        } else {
+          setSessions([]);
+          setIsShouldAdd(false);
         }
         setIsLoading(false);
-      }, 300); 
+      }, 300);
     };
 
     updateSessions();
@@ -52,13 +52,15 @@ const SessionListTable = () => {
         clearTimeout(timeoutId);
       }
     };
-  }, [user, student, pathname, studentId]);
+  }, [pathname, student, clearStudent, sessionsLoaded]);
 
   if (isLoading) {
     return (
       <div className="flex h-fit w-4/5 flex-col items-center justify-center rounded-md bg-primary-clear py-3 shadow-sm">
         <div className="flex w-4/5 flex-col items-center rounded-md">
-          <h1 className="font-bold text-primary-tint text-2xl mt-5">Loading...</h1>
+          <h1 className="mt-5 text-2xl font-bold text-primary-tint">
+            Loading...
+          </h1>
         </div>
       </div>
     );
@@ -73,7 +75,7 @@ const SessionListTable = () => {
               Sessions
             </h1>
           )}
-          {(sessions.length > 0 && studentId) ? (
+          {sessions.length > 0 ? (
             <Table className="mt-5">
               <TableHeader>
                 <TableRow isHeader={true}>
@@ -100,21 +102,18 @@ const SessionListTable = () => {
             </Table>
           ) : (
             <div>
-              {pathname.startsWith('/sessions') && !studentId && (
-                <h1 className="font-bold text-primary-tint text-2xl mt-5">Select a Student to See Their Sessions</h1>
+              {pathname === "/sessions" && !student && (
+                <h1 className="mt-5 text-2xl font-bold text-primary-tint">
+                  Select a Student to See Their Sessions
+                </h1>
               )}
-              {pathname.startsWith('/sessions') && studentId && sessions.length === 0 && (
-                <h1>No Sessions</h1>
-              )}
-              {pathname.startsWith('/students') && sessions.length === 0 && (
-                <h1>No Sessions</h1>
-              )}
+              {student && <h1>No Sessions</h1>}
             </div>
           )}
           <div className="mt-5">
-          {isShouldAdd && studentId && (
-            <CreateSessionDialog studentId={studentId} />
-          )}
+            {isShouldAdd && student && (
+              <CreateSessionDialog studentId={student._id} />
+            )}
           </div>
         </div>
       </div>
