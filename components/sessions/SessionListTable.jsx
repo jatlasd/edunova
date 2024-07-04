@@ -117,6 +117,7 @@ const SessionListTable = () => {
                 pathname === '/sessions' ? (
                   <CreateSessionDialog studentId={null}/>
                 ) : (
+                  // Reporting
                   <></>
                 )
               )}
