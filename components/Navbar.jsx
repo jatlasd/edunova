@@ -12,7 +12,7 @@ import {
   NavigationMenuItem,
   NavigationMenuTrigger,
   NavigationMenuList,
-  NavigationMenuLink, 
+  NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 
 const Navbar = () => {
@@ -48,37 +48,71 @@ const Navbar = () => {
                   </Link>
                 );
               })}
-              {user.role === "admin" || user.role === 'super' && (
-                <NavigationMenu>
-                  <NavigationMenuList>
-                    <NavigationMenuItem>
-                      <NavigationMenuTrigger
-                        className={cn("nav-link", {
-                          "nav-link-active":
-                            pathname === "/manage" ||
-                            pathname.startsWith("/manage"),
-                        })}
-                      >
-                        Manage
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <ul className="w-[170px] gap-5 p-2">
-                          <li className="manage-nav-link">
-                            <NavigationMenuLink>
-                              <a href="/manage/staff">Manage Staff</a>
-                            </NavigationMenuLink>
-                          </li>
-                          <li className="manage-nav-link">
-                            <NavigationMenuLink>
-                              <a href="/manage/students">Manage Students</a>
-                            </NavigationMenuLink>
-                          </li>
-                        </ul>
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
-                </NavigationMenu>
-              )}
+              {user.role === "admin" ||
+                (user.role === "super" && (
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger
+                          className={cn("nav-link", {
+                            "nav-link-active":
+                              pathname === "/manage" ||
+                              pathname.startsWith("/manage"),
+                          })}
+                        >
+                          Manage
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <ul className="w-[170px] gap-5 p-2">
+                            <li className="manage-nav-link">
+                              <NavigationMenuLink>
+                                <a href="/manage/staff">Manage Staff</a>
+                              </NavigationMenuLink>
+                            </li>
+                            <li className="manage-nav-link">
+                              <NavigationMenuLink>
+                                <a href="/manage/students">Manage Students</a>
+                              </NavigationMenuLink>
+                            </li>
+                          </ul>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                ))}
+
+            {/*          DELETE BEFORE PUBLISH  */}
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger
+                      className={cn("nav-link", {
+                        "nav-link-active":
+                          pathname === "/todos" ||
+                          pathname.startsWith("/todos"),
+                      })}
+                    >
+                      Todos
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="w-[170px] gap-5 p-2">
+                        <li className="manage-nav-link">
+                          <NavigationMenuLink>
+                            <a href="/todos">Todos List</a>
+                          </NavigationMenuLink>
+                        </li>
+                        <li className="manage-nav-link">
+                          <NavigationMenuLink>
+                            <a href="/manage/students">Manage Students</a>
+                          </NavigationMenuLink>
+                        </li>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            {/*          DELETE BEFORE PUBLISH  */}
+
               <button onClick={logout} className="nav-btn ml-10">
                 Sign Out
               </button>
