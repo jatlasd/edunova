@@ -22,6 +22,9 @@ const SessionSchema = new Schema({
         type: Date,
         required: true,
     },
+    conductedDate: {
+        type: Date
+    },
     status: {
         type: String,
         default: 'Pending',

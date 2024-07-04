@@ -65,6 +65,9 @@ export const DELETE = async (request, { params }) => {
         if (session.student) {
             await Student.findByIdAndUpdate(session.student, { $pull: { sessions: sessionId } });
         }
+        if (session.staff) {
+            await User.findByIdAndUpdate(session.staff, { $pull: { sessions: sessionId } });
+        }
 
         await session.deleteOne();
         return new Response(JSON.stringify(session), { status: 200 });

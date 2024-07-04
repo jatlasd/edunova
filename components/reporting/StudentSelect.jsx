@@ -15,13 +15,14 @@ import {
       <Select 
         value={selectedStudent} 
         onValueChange={onSelectStudent}
+        
       >
         <SelectTrigger>
           <SelectValue placeholder="Select a student" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className='bg-white-1'>
           {students.map((student) => (
-            <SelectItem key={student._id} value={student._id}>
+            <SelectItem key={student._id} value={student._id} className='cursor-pointer'>
               {student.name}
             </SelectItem>
           ))}

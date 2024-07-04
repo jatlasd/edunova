@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useGlobalContext } from "@lib/GlobalProvider";
 import StudentSelect from "./StudentSelect";
 import SessionListTable from "@components/sessions/SessionListTable";
+import SelectedSessionReportContainer from "./SelectedSessionReportContainer";
 
 const ReportContainer = () => {
   const { user } = useGlobalContext();
@@ -72,16 +73,14 @@ const ReportContainer = () => {
       />
       {selectedSession ? (
         <div className="flex w-full flex-col items-center gap-5">
-          <div className="flex w-1/2">
+          <div className="flex w-1/2 items-start">
             <button
               className="text-primary transition-all duration-75 hover:text-primary-tint hover:underline"
               onClick={() => setSelectedSession(null)}
             >
               Back
             </button>
-            <h2 className="w-full text-center text-xl font-semibold text-primary">
-              {selectedSession.name}
-            </h2>
+              <SelectedSessionReportContainer session={selectedSession} />
           </div>
         </div>
       ) : (

@@ -88,6 +88,7 @@ const CreateSessionDialog = () => {
       }),
       scheduledDate: format(new Date(), "yyyy-MM-dd",{timeZone: 'UTC'}),
       finishedDate: "",
+      conductedDate: "",
       status: "Initialized",
       staff: "",
       behaviors: [
