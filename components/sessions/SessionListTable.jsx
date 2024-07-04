@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { useStudentContext } from "@lib/StudentProvider";
 
-const SessionListTable = () => {
+const SessionListTable = ({ reportingSessions, handleSessionClick }) => {
   const { student, clearStudent } = useStudentContext();
   const [sessionsLoaded, setSessionsLoaded] = useState(false);
   const pathname = usePathname();
@@ -33,6 +33,8 @@ const SessionListTable = () => {
             clearStudent();
             setSessions([]);
             setSessionsLoaded(true);
+          } else if (pathname.startsWith("/reporting") && reportingSessions) {
+            setSessions(reportingSessions);
           } else {
             setSessions(student.sessions || []);
             setIsShouldAdd(pathname.startsWith("/sessions/"));
@@ -52,7 +54,7 @@ const SessionListTable = () => {
         clearTimeout(timeoutId);
       }
     };
-  }, [pathname, student, clearStudent, sessionsLoaded]);
+  }, [pathname, student, clearStudent, sessionsLoaded, reportingSessions]);
 
   if (isLoading) {
     return (
@@ -89,7 +91,11 @@ const SessionListTable = () => {
                 {sessions.map((session) => (
                   <TableRow
                     key={session._id}
-                    onClick={() => router.push(`/sessions/${session._id}`)}
+                    onClick={() =>
+                      handleSessionClick
+                        ? handleSessionClick(session)
+                        : router.push(`/sessions/${session._id}`)
+                    }
                     className="cursor-pointer"
                   >
                     <TableCell>{session.name}</TableCell>
@@ -111,17 +117,14 @@ const SessionListTable = () => {
             </div>
           )}
           <div className="mt-5">
-              {pathname.startsWith('/students') ? (
-                <CreateSessionDialog studentId={student._id} />
-              ) : (
-                pathname === '/sessions' ? (
-                  <CreateSessionDialog studentId={null}/>
-                ) : (
-                  // Reporting
-                  <></>
-                )
-              )}
-              
+            {pathname.startsWith("/students") ? (
+              <CreateSessionDialog studentId={student._id} />
+            ) : pathname === "/sessions" ? (
+              <CreateSessionDialog studentId={null} />
+            ) : (
+              // Reporting
+              <></>
+            )}
           </div>
         </div>
       </div>
