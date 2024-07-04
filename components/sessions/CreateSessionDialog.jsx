@@ -210,7 +210,7 @@ const CreateSessionDialog = () => {
               )}
               className="flex flex-col space-y-3"
             >
-              {pathname === '/sessions' && (
+              {pathname === '/sessions' && !student &&(
                 <FormField
                   control={form.control}
                   name='student'

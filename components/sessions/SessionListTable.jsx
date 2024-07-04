@@ -111,9 +111,16 @@ const SessionListTable = () => {
             </div>
           )}
           <div className="mt-5">
-            {isShouldAdd && student && (
-              <CreateSessionDialog studentId={student._id} />
-            )}
+              {pathname.startsWith('/students') ? (
+                <CreateSessionDialog studentId={student._id} />
+              ) : (
+                pathname === '/sessions' ? (
+                  <CreateSessionDialog studentId={null}/>
+                ) : (
+                  <></>
+                )
+              )}
+              
           </div>
         </div>
       </div>
