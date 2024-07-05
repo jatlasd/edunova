@@ -73,7 +73,7 @@ const ReportContainer = () => {
       />
       {selectedSession ? (
         <div className="flex w-full flex-col items-center gap-5">
-          <div className="flex w-1/2 items-start">
+          <div className="flex items-start w-full">
             <button
               className="text-primary transition-all duration-75 hover:text-primary-tint hover:underline"
               onClick={() => setSelectedSession(null)}
