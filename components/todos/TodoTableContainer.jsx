@@ -13,31 +13,58 @@ const TodoTableContainer = () => {
       try {
         const response = await fetch("/api/todo");
         const data = await response.json();
-        setAllData(data);
+        const normalizedData = data.map(item => ({
+          ...item,
+          status: item.status === "completed" ? "completed" : "open"
+        }));
+        setAllData(normalizedData);
       } catch (error) {
         console.error("Failed to fetch todos:", error);
       }
     };
 
-    const sortTodos = (allData) => {
+    fetchAllTodos();
+  }, []);
+
+  useEffect(() => {
+    const sortTodos = () => {
       const bugs = allData.filter((todo) => todo.type === "Bug");
-      console.log("bugs:", bugs);
-      setBugs(bugs);
       const todos = allData.filter((todo) => todo.type !== "Bug");
+      setBugs(bugs);
       setTodos(todos);
     };
 
-    fetchAllTodos();
     if (allData.length > 0) {
-      sortTodos(allData);
+      sortTodos();
     }
-    console.log("running");
-  }, [allData.length]);
+  }, [allData]);
+
+  const handleItemUpdate = (updatedItem) => {
+    setAllData((prevData) =>
+      prevData.map((item) =>
+        item._id === updatedItem._id ? updatedItem : item
+      )
+    );
+  };
+
+  const handleItemDelete = (deletedItemId) => {
+    setAllData((prevData) => prevData.filter((item) => item._id !== deletedItemId));
+  };
 
   return (
-    <div className="flex w-3/4 gap-10">
-      <TodoTable items={todos} type="Todos"/>
-      <TodoTable items={bugs} type="Bugs"/>
+    <div className="flex flex-col w-3/4 gap-10">
+      <TodoTable 
+        items={todos} 
+        type="Todos" 
+        onItemUpdate={handleItemUpdate} 
+        onItemDelete={handleItemDelete}
+      />
+      <TodoTable 
+        items={bugs} 
+        type="Bugs" 
+        onItemUpdate={handleItemUpdate} 
+        onItemDelete={handleItemDelete}
+      />
     </div>
   );
 };
