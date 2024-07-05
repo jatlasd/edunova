@@ -15,3 +15,13 @@ export const POST = async (request) => {
         return new Response('Failed to create new todo', { status: 500 });
     }
 };
+
+export const GET = async (request) => {
+    await connectToDB();
+    try {
+        const todos = await Todo.find()
+        return new Response(JSON.stringify(todos), { status: 200 })
+    } catch (error) {
+        return new Response('Failed to fetch todos', { status: 500 })
+    }
+}
