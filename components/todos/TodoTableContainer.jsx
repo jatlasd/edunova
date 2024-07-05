@@ -52,7 +52,7 @@ const TodoTableContainer = () => {
   };
 
   return (
-    <div className="flex flex-col w-3/4 gap-10">
+    <div className="flex flex-col w-3/4 gap-10 mb-20">
       <TodoTable 
         items={todos} 
         type="Todos" 
