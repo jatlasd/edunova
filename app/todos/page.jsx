@@ -3,7 +3,7 @@ import React from 'react'
 
 const TodoPage = () => {
   return (
-    <div className='flex flex-col gap-5 w-1/5 ml-[300px] mt-40'>
+    <div className='flex flex-col items-center gap-5 w-full  mt-40'>
       <TodoTableContainer/>
     </div>
   )

@@ -35,9 +35,9 @@ const TodoTableContainer = () => {
   }, [allData.length]);
 
   return (
-    <div>
-      <button onClick={() => console.log(bugs)}>click</button>
-      <TodoTable />
+    <div className="flex w-3/4 gap-10">
+      <TodoTable items={todos} type="Todos"/>
+      <TodoTable items={bugs} type="Bugs"/>
     </div>
   );
 };
