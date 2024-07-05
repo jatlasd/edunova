@@ -88,12 +88,12 @@ const TodoTable = ({ items, type, onItemUpdate, onItemDelete }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{isBugs ? 'Bug' : 'Todo'}</TableHead>
+            <TableHead className='w-[150px]'>{isBugs ? 'Bug' : 'Todo'}</TableHead>
             <TableHead>Description</TableHead>
             {isBugs && <TableHead>Path</TableHead>}
-            <TableHead>Notes</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className='w-[100px]'>Notes</TableHead>
+            <TableHead className='w-[100px]'>Status</TableHead>
+            <TableHead className='w-[100px]'>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -159,7 +159,7 @@ const TodoTable = ({ items, type, onItemUpdate, onItemDelete }) => {
                     </SelectContent>
                   </Select>
                 ) : (
-                  item.status
+                  <span className="capitalize">{item.status}</span>
                 )}
               </TableCell>
               <TableCell>
