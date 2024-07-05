@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import TimestampTable from "./TimestampTable";
 
 const SelectedSessionReportContainer = ({ session }) => {
   return (
@@ -9,6 +10,10 @@ const SelectedSessionReportContainer = ({ session }) => {
       <button className="my-5 border p-3" onClick={() => console.log(session.behaviors[0].timestamps)}>Behaviors1</button>
       <button className="my-5 border p-3" onClick={() => console.log(session.behaviors[1].timestamps)}>Behaviors2</button>
       <p>Conducted On&nbsp;:&nbsp;<span>{format(session.conductedDate, ('MM-dd-yyyy'))}</span></p>
+      {session.behaviors.map((behavior, index) => (
+        <TimestampTable key={index} behavior={behavior} />
+      
+      ))}
     </div>
   );
 };
