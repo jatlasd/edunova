@@ -14,6 +14,7 @@ import {
   NavigationMenuList,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
+import AddTodoDialog from "./todos/AddTodoDialog";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -81,7 +82,7 @@ const Navbar = () => {
                   </NavigationMenu>
                 ))}
 
-            {/*          DELETE BEFORE PUBLISH  */}
+              {/*          DELETE BEFORE PUBLISH  */}
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
@@ -102,16 +103,17 @@ const Navbar = () => {
                           </NavigationMenuLink>
                         </li>
                         <li className="manage-nav-link">
-                          <NavigationMenuLink>
-                            <a href="/manage/students">Manage Students</a>
-                          </NavigationMenuLink>
+                          <AddTodoDialog />
+                        </li>
+                        <li className="manage-nav-link">
+                          <AddTodoDialog type="bug"/>
                         </li>
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-            {/*          DELETE BEFORE PUBLISH  */}
+              {/*          DELETE BEFORE PUBLISH  */}
 
               <button onClick={logout} className="nav-btn ml-10">
                 Sign Out

@@ -1,7 +1,8 @@
 import { Schema, model, models} from "mongoose";
 
 const TodoSchema = new Schema({
-    bug: String,
+    type: String,
+    item: String,
     description: String,
     status: String,
     path: String,

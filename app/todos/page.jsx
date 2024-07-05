@@ -3,7 +3,8 @@ import React from 'react'
 
 const TodoPage = () => {
   return (
-    <div>
+    <div className='flex flex-col gap-5 w-1/5 ml-[300px] mt-40'>
+        <AddTodoDialog type="bug"/>
         <AddTodoDialog />
     </div>
   )

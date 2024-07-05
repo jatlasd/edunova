@@ -1,5 +1,5 @@
-import Todo from './path/to/your/Todo/model';
-import { connectToDB } from './path/to/your/db/connection';
+import Todo from '@models/todo';
+import { connectToDB } from '@lib/database';
 
 export const POST = async (request) => {
     try {
