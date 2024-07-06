@@ -15,9 +15,9 @@ const TimestampTable = ({ behavior }) => {
       <div className="w-full border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-1/3">Timestamp</TableHead>
-              <TableHead>Notes</TableHead>
+            <TableRow className='bg-primary-clear' isHeader={true}>
+              <TableHead className="w-1/3 text-primary-tint font-semibold text-lg">Timestamp</TableHead>
+              <TableHead className='text-primary-tint font-semibold text-lg'>Notes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
