@@ -15,6 +15,7 @@ import {
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 import AddTodoDialog from "./todos/AddTodoDialog";
+import WhatWasIDoingNow from "./todos/WhatWasIDoingNow";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -107,6 +108,9 @@ const Navbar = () => {
                         </li>
                         <li className="manage-nav-link">
                           <AddTodoDialog type="bug"/>
+                        </li>
+                        <li>
+                          <WhatWasIDoingNow />
                         </li>
                       </ul>
                     </NavigationMenuContent>
