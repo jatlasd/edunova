@@ -5,7 +5,7 @@ import Student from "@models/student";
 import Behavior from "@models/behavior";
 
 export const POST = async (request) => {
-    const { name, student, createdDate, finishedDate, status, staff, behaviors, scheduledDate } = await request.json();
+    const { name, student, createdDate, finishedDate, status, staff, behaviors, scheduledDate, startTime, endTime } = await request.json();
     try {
         await connectToDB();
         const session = new Session({
@@ -15,6 +15,8 @@ export const POST = async (request) => {
             finishedDate,
             status,
             staff,
+            startTime,
+            endTime,
             behaviors,
             scheduledDate
         });

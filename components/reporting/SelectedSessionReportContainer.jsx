@@ -14,14 +14,18 @@ const SelectedSessionReportContainer = ({ session }) => {
       </p>
       {/* Report Cards */}
       <div className="flex w-full flex-col gap-5">
-        <div className="flex flex-col items-center bg-white-2 p-10 shadow-md rounded-md">
-          <h1 className="text-primary font-bold text-2xl w-1/5 pb-1 border-b border-b-primary/30 text-center">Behavior Logs</h1>
-        <div className="mt-5 flex w-full gap-5 ">
-          {session.behaviors.map((behavior, index) => (
-            <TimestampTable key={index} behavior={behavior} />
-          ))}
+        {/* TimestampTables */}
+        <div className="flex flex-col items-center rounded-md bg-white-2 p-10 shadow-md">
+          <h1 className="w-1/5 border-b border-b-primary/30 pb-1 text-center text-2xl font-bold text-primary">
+            Behavior Logs
+          </h1>
+          <div className="mt-5 flex w-full gap-5">
+            {session.behaviors.map((behavior, index) => (
+              <TimestampTable key={index} behavior={behavior} />
+            ))}
+          </div>
         </div>
-        </div>
+        
       </div>
     </div>
   );

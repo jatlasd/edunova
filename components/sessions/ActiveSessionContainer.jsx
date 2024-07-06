@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useGlobalContext } from "@lib/GlobalProvider";
 import { format } from "date-fns";
+import { getCurrentTimeFormatted } from "@lib/utils";
 
 const formatTime = (date) => {
   const hours = date.getHours();
@@ -53,7 +54,9 @@ const ActiveSessionContainer = ({ sessionId }) => {
   };
 
   const handleSubmit = async () => {
-    const updatedSession = { ...session, status: "Pending", conductedDate: format(new Date(), ('MM-dd-yyyy')) };
+    const time = getCurrentTimeFormatted(); 
+
+    const updatedSession = { ...session, status: "Pending", conductedDate: format(new Date(), ('MM-dd-yyyy')), endTime: time };
     const response = await fetch(`/api/session/${sessionId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

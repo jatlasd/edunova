@@ -89,6 +89,8 @@ const CreateSessionDialog = () => {
       scheduledDate: format(new Date(), "yyyy-MM-dd",{timeZone: 'UTC'}),
       finishedDate: "",
       conductedDate: "",
+      startTime: "",
+      endTime: "",
       status: "Initialized",
       staff: "",
       behaviors: [
@@ -150,6 +152,8 @@ const CreateSessionDialog = () => {
 
     const updatedData = {
       ...data,
+      startTime: "",
+      endTime: "",
       scheduledDate: format(data.scheduledDate, "MM-dd-yyyy"),
       behaviors: selectedData.map((behavior) => ({
         behavior: behavior.behavior,

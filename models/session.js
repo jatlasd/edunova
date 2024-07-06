@@ -12,6 +12,8 @@ const SessionSchema = new Schema({
         ref: 'Student',
         required: true
       },
+      startTime: String,
+      endTime: String,
     createdDate: {
         type: String
     },

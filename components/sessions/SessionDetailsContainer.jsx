@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import * as React from "react";
+import { getCurrentTimeFormatted } from "@lib/utils";
 
 const SessionDetailsContainer = ({ sessionId }) => {
   const router = useRouter();
@@ -62,6 +63,31 @@ const SessionDetailsContainer = ({ sessionId }) => {
       setAllTimestamps(combinedTimestamps);
     }
   }, [session]);
+
+  const handleStartSession = async () => {
+    const time = getCurrentTimeFormatted();
+    session.startTime = time
+  
+    try {
+      const response = await fetch(`/api/session/${sessionId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(session),
+      });
+  
+      if (response.ok) {
+        console.log('response.ok')
+        router.push(`/sessions/${sessionId}/active`)
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to update session start time:", errorData);
+      }
+    } catch (error) {
+      console.error("Network or other error:", error);
+    }
+  };
 
   const handleSubmit = async () => {
     session.status = "Finalized";
@@ -215,7 +241,7 @@ const SessionDetailsContainer = ({ sessionId }) => {
               {session.status === "Initialized" && (
                 <button
                   className="rounded-md bg-primary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-primary-tint"
-                  onClick={() => router.push(`/sessions/${sessionId}/active`)}
+                  onClick={handleStartSession}
                 >
                   Start Session
                 </button>
