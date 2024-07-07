@@ -38,7 +38,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 import { useGlobalContext } from "@lib/GlobalProvider";
 
@@ -74,8 +74,10 @@ const CreateSessionDialog = () => {
   const router = useRouter();
   const { user } = useGlobalContext();
   const { student, studentId } = useStudentContext();
-  const [selectedStudent, setSelectedStudent] = useState(student)
+  const [selectedStudent, setSelectedStudent] = useState(student);
   const [allStudents, setAllStudents] = useState([]);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const handlePopoverOpen = () => setPopoverOpen(!popoverOpen);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,7 +88,7 @@ const CreateSessionDialog = () => {
         month: "2-digit",
         day: "2-digit",
       }),
-      scheduledDate: format(new Date(), "yyyy-MM-dd",{timeZone: 'UTC'}),
+      scheduledDate: "",
       finishedDate: "",
       conductedDate: "",
       startTime: "",
@@ -185,11 +187,6 @@ const CreateSessionDialog = () => {
     }
   }
 
-  const showDate = () => {
-    const today = new Date();
-    console.log(today);
-  };
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -215,30 +212,33 @@ const CreateSessionDialog = () => {
               )}
               className="flex flex-col space-y-3"
             >
-              {pathname === '/sessions' && !student &&(
+              {pathname === "/sessions" && !student && (
                 <FormField
                   control={form.control}
-                  name='student'
-                  render={({field}) => (
+                  name="student"
+                  render={({ field }) => (
                     <div className="flex flex-col gap-1.5">
-                      <FormLabel className='form-label'>Student</FormLabel>
-                      <Select onValueChange={field.onChange} defaultVaule={field.value}>
+                      <FormLabel className="form-label">Student</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultVaule={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue  placeholder="Select a student"/>
+                            <SelectValue placeholder="Select a student" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className='bg-white-1'>
+                        <SelectContent className="bg-white-1">
                           {allStudents.map((student) => (
-                            <SelectItem key={student._id} value={student._id}>{student.name}</SelectItem>
+                            <SelectItem key={student._id} value={student._id}>
+                              {student.name}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                   )}
-                >
-
-                </FormField>
+                ></FormField>
               )}
               <FormField
                 control={form.control}
@@ -265,11 +265,13 @@ const CreateSessionDialog = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel className="form-label">Date</FormLabel>
-                    <Popover>
+                    <Popover
+                      open={popoverOpen}
+                      onOpenChange={handlePopoverOpen}
+                    >
                       <PopoverTrigger asChild>
                         <FormControl>
                           <button
-                            variant={"outline"}
                             className={cn(
                               "w-[240px] pl-3 text-left font-normal",
                               !field.value && "text-muted-foreground",
@@ -285,13 +287,17 @@ const CreateSessionDialog = () => {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent
-                        className="w-auto bg-white-1 p-0"
+                        className="popover-content w-auto bg-white-1 p-0"
                         align="start"
+                        onMouseDown={(e) => e.stopPropagation()}
                       >
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            handlePopoverOpen();
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
