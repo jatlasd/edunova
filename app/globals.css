@@ -127,3 +127,32 @@ main {
     -webkit-text-fill-color: #333 !important;
   }
 }
+
+@media (max-width: 1023px) {
+  .nav-link {
+    display: block;
+    padding: 0.5rem 0;
+    width: 100%;
+  }
+
+  .manage-nav-link {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Gradual responsiveness */
+@media (max-width: 1200px) {
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+/* Add any other styles you need for the nav-btn, etc. */

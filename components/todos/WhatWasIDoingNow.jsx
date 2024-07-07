@@ -69,7 +69,7 @@ const WhatWasIDoingNow = () => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <button className="btn-primary">What was I doing now?</button>
+        <button className="btn-primary">WWIDN?</button>
       </DialogTrigger>
       <DialogContent
         className="bg-white-1"
