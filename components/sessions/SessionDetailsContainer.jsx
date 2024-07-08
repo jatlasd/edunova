@@ -237,7 +237,7 @@ const SessionDetailsContainer = ({ sessionId }) => {
 
           {/* Buttons */}
           <div className="mt-8 flex w-full flex-col items-center gap-2">
-            <div className="flex w-1/2 items-center">
+            <div className="flex w-1/2 items-center justify-center">
               {session.status === "Initialized" && (
                 <button
                   className="rounded-md bg-primary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-primary-tint"
