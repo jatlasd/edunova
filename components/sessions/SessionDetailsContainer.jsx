@@ -11,8 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import * as React from "react";
 import { getCurrentTimeFormatted } from "@lib/utils";
+import { set } from "mongoose";
 
 const SessionDetailsContainer = ({ sessionId }) => {
   const router = useRouter();
@@ -22,6 +32,8 @@ const SessionDetailsContainer = ({ sessionId }) => {
   const [dataFilter, setDataFilter] = useState("default");
   const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
   const [finalNotes, setFinalNotes] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => setIsOpen(!isOpen);
 
   useEffect(() => {
     if (finalNotes.trim() === "") {
@@ -66,8 +78,8 @@ const SessionDetailsContainer = ({ sessionId }) => {
 
   const handleStartSession = async () => {
     const time = getCurrentTimeFormatted();
-    session.startTime = time
-  
+    session.startTime = time;
+
     try {
       const response = await fetch(`/api/session/${sessionId}`, {
         method: "PATCH",
@@ -76,10 +88,10 @@ const SessionDetailsContainer = ({ sessionId }) => {
         },
         body: JSON.stringify(session),
       });
-  
+
       if (response.ok) {
-        console.log('response.ok')
-        router.push(`/sessions/${sessionId}/active`)
+        console.log("response.ok");
+        router.push(`/sessions/${sessionId}/active`);
       } else {
         const errorData = await response.json();
         console.error("Failed to update session start time:", errorData);
@@ -114,9 +126,10 @@ const SessionDetailsContainer = ({ sessionId }) => {
       method: "DELETE",
     });
     if (response.ok) {
+      setIsOpen(false);
       router.push("/sessions");
     }
-  }
+  };
 
   return (
     <div className="mt-10 flex w-full">
@@ -206,10 +219,10 @@ const SessionDetailsContainer = ({ sessionId }) => {
                 </div>
               ) : (
                 <div className="ml-16 mt-5 grid w-full grid-cols-3 gap-5 rounded-md bg-primary-clear p-10 pb-10 shadow-md">
-                  <span className="col-span-1 w-1/2 text-lg font-bold text-primary-tint border-b-2 border-primary-clear">
+                  <span className="col-span-1 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
                     Time
                   </span>
-                  <span className="col-span-2 w-1/2 text-lg font-bold text-primary-tint border-b-2 border-primary-clear">
+                  <span className="col-span-2 w-1/2 border-b-2 border-primary-clear text-lg font-bold text-primary-tint">
                     Notes
                   </span>
                   {allTimestamps
@@ -265,9 +278,25 @@ const SessionDetailsContainer = ({ sessionId }) => {
                 </div>
               )}
             </div>
-            <button className="rounded-md bg-secondary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-secondary-tint" onClick={handleDelete}>
-              Delete Session
-            </button>
+            <Dialog open={isOpen} onOpenChange={handleOpen}>
+              <DialogTrigger asChild>
+                <button
+                  className="rounded-md bg-secondary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-secondary-tint"
+                  onClick={handleOpen}
+                >
+                  Delete Session
+                </button>
+              </DialogTrigger>
+              <DialogContent className='bg-white-1'>
+                <DialogHeader>
+                  <DialogTitle className='text-primary-tint text-xl mb-5 text-center'>Delete {session.name}?</DialogTitle>
+                </DialogHeader>
+                <div className="flex gap-10 justify-center">
+                  <button className="btn-secondary" onClick={handleDelete}>Delete</button>
+                  <button className="btn-primary" onClick={handleOpen}>Cancel</button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       )}
