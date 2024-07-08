@@ -56,7 +56,6 @@ const UpcomingSessionsDisplay = () => {
         if (user && user.id) {
           const response = await fetch(`/api/user/${user.id}`);
           const data = await response.json();
-          console.log("Fetched sessions:", data.sessions);
           setAllSessions(data.sessions);
           const sorted = getUpcomingSessions(data.sessions);
           setSortedSessions(sorted);

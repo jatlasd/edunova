@@ -32,3 +32,15 @@ export const POST = async (request) => {
     return new Response("Failed to add behavior", { status: 500 });
   }
 };
+
+export const GET = async (request) => {
+  await connectToDB();
+
+  try {
+    const behaviors = await Behavior.find();
+    return new Response(JSON.stringify(behaviors), { status: 200 });
+  } catch (error) {
+    console.error("Error fetching behaviors:", error.message, error.stack);
+    return new Response("Failed to fetch behaviors", { status: 500 });
+  }
+}

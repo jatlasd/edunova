@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   Popover,
   PopoverContent,
@@ -12,7 +6,6 @@ import {
 } from "@/components/ui/popover";
 
 import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
 
 import { useState } from "react";
 

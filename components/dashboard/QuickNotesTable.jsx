@@ -8,6 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Trash2Icon, X } from "lucide-react";
 
 const QuickNotesTable = () => {
@@ -27,6 +35,7 @@ const QuickNotesTable = () => {
     behaviorId: null,
     noteIndex: null,
   });
+  const [allBehaviors, setAllBehaviors] = useState([]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -34,8 +43,14 @@ const QuickNotesTable = () => {
       const data = await response.json();
       setDetails(data.quickNotes);
     };
+    const fetchAllBehaviors = async () => {
+      const response = await fetch("/api/behavior");
+      const data = await response.json();
+      setAllBehaviors(data);
+    };
     if (user && user.id) {
       fetchUserDetails();
+      fetchAllBehaviors();
     }
   }, [user]);
 
@@ -151,7 +166,7 @@ const QuickNotesTable = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-7 w-full">
+    <div className="flex w-full flex-col items-center gap-7">
       <div className="flex w-1/2 flex-col gap-3 bg-primary-clear shadow-md">
         <span className="mt-4 flex self-center text-3xl font-bold text-primary-tint">
           Quick Notes
@@ -330,12 +345,24 @@ const QuickNotesTable = () => {
         </Accordion>
         {isAddNewBehavior ? (
           <div className="mx-5 mb-5 mt-4 flex items-center gap-4">
-            <input
-              value={newBehaviorText}
-              onChange={(e) => setNewBehaviorText(e.target.value)}
-              placeholder="New behavior"
-              className="mr-2 flex-grow rounded-lg border border-primary/20 p-2 focus:outline-none"
-            />
+            <button
+              className="btn-primary"
+              onClick={() => console.log(allBehaviors)}
+            >
+              click
+            </button>
+            <Select onValueChange={(value) => setNewBehaviorText(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a behavior" />
+              </SelectTrigger>
+              <SelectContent className="bg-white-1">
+                {allBehaviors.map((behavior, index) => (
+                  <SelectItem key={index} value={behavior.behavior}>
+                    {behavior.behavior}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <button onClick={handleAddBehavior} className="btn-primary">
               Add Behavior
             </button>
