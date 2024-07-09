@@ -352,7 +352,7 @@ const QuickNotesTable = () => {
               click
             </button>
             <Select onValueChange={(value) => setNewBehaviorText(value)}>
-              <SelectTrigger>
+              <SelectTrigger className='bg-white-1'>
                 <SelectValue placeholder="Select a behavior" />
               </SelectTrigger>
               <SelectContent className="bg-white-1">
@@ -364,7 +364,7 @@ const QuickNotesTable = () => {
               </SelectContent>
             </Select>
             <button onClick={handleAddBehavior} className="btn-primary">
-              Add Behavior
+              Add
             </button>
             <button
               onClick={() => setIsAddNewBehavior(false)}

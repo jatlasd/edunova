@@ -156,7 +156,7 @@ const SignUp = () => {
             />
 
             <div className="flex flex-row justify-center">
-              <p className="font-semibold text-slate-600">
+              <p className=" text-slate-600">
                 Already have an account?&nbsp;
               </p>
               <Link

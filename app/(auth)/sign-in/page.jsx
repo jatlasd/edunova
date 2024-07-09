@@ -140,7 +140,7 @@ const SignIn = () => {
               )}
             />
             <div className="flex flex-row justify-center">
-              <p className="font-semibold text-slate-600">
+              <p className=" text-slate-600">
                 Don't have an account?&nbsp;
               </p>
               <Link
