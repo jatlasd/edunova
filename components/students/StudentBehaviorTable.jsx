@@ -47,7 +47,7 @@ const StudentBehaviorTable = ({ studentId }) => {
   };
 
   const handleClick = () => {
-    console.log(student)
+    console.log(student.student.behaviors)
   }
 
   return (
@@ -79,7 +79,7 @@ const StudentBehaviorTable = ({ studentId }) => {
         <button className="btn-primary mr-10" onClick={handleClick}>click</button>
         <AddBehavior studentId={studentId} update={update} />
       </div>
-      {student.behaviors && student.behaviors.length > 0 ? (
+      {student.student?.behaviors && student.student.behaviors.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow isHeader={true}>
@@ -92,7 +92,7 @@ const StudentBehaviorTable = ({ studentId }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {student.behaviors.map((behavior, index) => (
+            {student.student.behaviors.map((behavior, index) => (
               <TableRow key={index}>
                 <TableCell className="text-base text-primary-tint">
                   {behavior.behavior}

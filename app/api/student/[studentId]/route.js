@@ -20,7 +20,6 @@ export const GET = async (request, { params }) => {
 
 return new Response(JSON.stringify({
   student: student,
-  behaviors: populatedStudent.behaviors,
   sessions: populatedStudent.sessions,
   staff: populatedStudent.users,
 }), {
