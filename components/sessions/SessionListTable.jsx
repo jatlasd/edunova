@@ -117,7 +117,7 @@ const SessionListTable = ({ reportingSessions, handleSessionClick }) => {
             </div>
           )}
           <div className="mt-5">
-            {pathname.startsWith("/students") ? (
+            {student && pathname.startsWith("/students") ? (
               <CreateSessionDialog studentId={student._id} />
             ) : pathname === "/sessions" ? (
               <CreateSessionDialog studentId={null} />

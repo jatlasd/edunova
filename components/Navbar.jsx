@@ -222,6 +222,7 @@ const Navbar = () => {
           </NavigationMenuList>
         </NavigationMenu>
       )}
+      {/* DELETE ME */}
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -233,7 +234,7 @@ const Navbar = () => {
             >
               Todos
             </NavigationMenuTrigger>
-            <NavigationMenuContent>
+            <NavigationMenuContent className='bg-white-1'>
               <ul className="w-[170px] gap-5 p-2">
                 <li className="manage-nav-link">
                   <NavigationMenuLink asChild>
@@ -254,6 +255,7 @@ const Navbar = () => {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+      {/* DELETE ME */}
     </>
   );
 

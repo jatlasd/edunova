@@ -13,6 +13,7 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useGlobalContext } from "@lib/GlobalProvider";
+import { useToast } from "@components/ui/use-toast";
 import { useState } from "react";
 
 const formSchema = z.object({
@@ -23,6 +24,7 @@ const formSchema = z.object({
 });
 
 const AddTodoDialog = ({ type }) => {
+  const {toast} = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useGlobalContext();
   const form = useForm({
@@ -65,6 +67,9 @@ const AddTodoDialog = ({ type }) => {
       }
       if (response.ok) {
         console.log("Todo added successfully");
+        toast({
+          title: "Added successfully"
+        })
         setIsOpen(false);
       }
     } catch (error) {
