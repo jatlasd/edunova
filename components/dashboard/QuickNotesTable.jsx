@@ -345,12 +345,6 @@ const QuickNotesTable = () => {
         </Accordion>
         {isAddNewBehavior ? (
           <div className="mx-5 mb-5 mt-4 flex items-center gap-4">
-            <button
-              className="btn-primary"
-              onClick={() => console.log(allBehaviors)}
-            >
-              click
-            </button>
             <Select onValueChange={(value) => setNewBehaviorText(value)}>
               <SelectTrigger className='bg-white-1'>
                 <SelectValue placeholder="Select a behavior" />
