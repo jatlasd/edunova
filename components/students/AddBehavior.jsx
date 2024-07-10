@@ -54,7 +54,7 @@ const AddBehavior = ({ studentId, update }) => {
       <PopoverTrigger asChild>
         <button
           onClick={() => setIsOpen(true)}
-          className="my-2 w-1/3 rounded-md bg-primary px-2 py-1 text-base font-semibold text-white-1 shadow-md transition-all duration-75 hover:bg-primary-tint"
+          className="w-1/3 px-2 py-1 my-2 text-base font-semibold transition-all duration-75 rounded-md shadow-md bg-primary text-white-1 hover:bg-primary-tint"
         >
           Add Behavior
         </button>
@@ -90,7 +90,7 @@ const AddBehavior = ({ studentId, update }) => {
                 <SelectContent className="bg-white-1">
                   <SelectItem
                     value="add_new"
-                    className="cursor-pointer font-semibold text-primary"
+                    className="font-semibold cursor-pointer text-primary"
                   >
                     Add new behavior
                   </SelectItem>

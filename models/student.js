@@ -18,8 +18,8 @@ const StudentSchema = new Schema({
     ref: 'User'
   }],
   behaviors: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Behavior'
+      behavior: String,
+      description: String,
   }],
   sessions: [{
     type: Schema.Types.ObjectId,

@@ -10,8 +10,7 @@ export const POST = async (request) => {
   try {
     // Create a new behavior
     const newBehavior = new Behavior({
-      behavior,
-      description,
+      behavior
     });
     await newBehavior.save();
 
@@ -23,7 +22,7 @@ export const POST = async (request) => {
       return new Response("Student not found", { status: 404 });
     }
 
-    foundStudent.behaviors.push(newBehavior._id); // Only add the ObjectId
+    foundStudent.behaviors.push({behavior: behavior, description: description}); // Only add the ObjectId
     await foundStudent.save();
 
     return new Response(JSON.stringify(newBehavior), { status: 200 });

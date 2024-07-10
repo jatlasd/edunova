@@ -46,6 +46,10 @@ const StudentBehaviorTable = ({ studentId }) => {
     }
   };
 
+  const handleClick = () => {
+    console.log(student)
+  }
+
   return (
     <div
       className={`flex flex-1 flex-col rounded-md bg-primary-clear p-3 ${!student.behaviors || student.behaviors.length === 0 ? "h-30 items-center justify-center" : ""}`}
@@ -72,6 +76,7 @@ const StudentBehaviorTable = ({ studentId }) => {
         </DialogContent>
       </Dialog>
       <div className="flex w-full justify-center">
+        <button className="btn-primary mr-10" onClick={handleClick}>click</button>
         <AddBehavior studentId={studentId} update={update} />
       </div>
       {student.behaviors && student.behaviors.length > 0 ? (

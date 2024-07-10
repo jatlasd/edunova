@@ -4,10 +4,6 @@ const BehaviorSchema = new Schema({
   behavior: {
     type: String,
     required: true
-  },
-  description: {
-    type: String,
-    required: false
   }
 }, { collection: 'Behavior' }); 
 

@@ -13,7 +13,6 @@ export const POST = async (request) => {
 
                     Behavior Data:
                     ${JSON.stringify(behaviorData, null, 2)}
-                    Please begin by explaining the data and citing specifc examples.
 
                     Please conduct a thorough analysis of this data and provide detailed insights in the following areas:
 
@@ -31,21 +30,16 @@ export const POST = async (request) => {
                     - Based on the notes and descriptions, identify potential triggers or antecedents for the observed behaviors.
                     - Group similar triggers and rank them by likely impact on behavior.
 
-                    4. Positive Behavior Recognition:
-                    - Highlight all instances of positive behaviors.
-                    - Identify conditions or factors that seem to promote positive behaviors.
-                    - Suggest ways to reinforce and increase these positive behaviors.
-
-                    5. Areas of Concern:
+                    4. Areas of Concern:
                     - Identify behaviors that require immediate attention or intervention.
                     - Rank these behaviors based on their frequency and potential impact on learning.
                     - For each area of concern, provide a brief explanation of why it's problematic.
 
-                    6. Behavior Function Hypothesis:
+                    5. Behavior Function Hypothesis:
                     - For the top 3 most frequent or concerning behaviors, hypothesize about the possible functions (e.g., attention-seeking, escape, sensory stimulation, access to tangibles).
                     - Provide reasoning for each hypothesis based on the available data.
 
-                    7. Intervention Recommendations:
+                    6. Intervention Recommendations:
                     - Suggest 3-5 evidence-based strategies that teachers or staff could implement to address the most pressing behavioral concerns.
                     - For each strategy, provide:
                         a) A brief description of the intervention
@@ -53,23 +47,23 @@ export const POST = async (request) => {
                         c) Expected outcomes
                         d) Any potential challenges in implementation
 
-                    8. Data-Driven Goals:
+                    7. Data-Driven Goals:
                     - Propose 2-3 specific, measurable goals for behavior improvement based on the data.
                     - Suggest how progress towards these goals could be tracked and measured.
 
-                    9. Environmental Considerations:
+                    8. Environmental Considerations:
                     - Based on the data, identify any environmental factors (classroom setup, seating arrangements, time of day, etc.) that might be influencing behavior.
                     - Suggest potential environmental modifications that could positively impact behavior.
 
-                    10. Peer Interaction Analysis:
+                    9. Peer Interaction Analysis:
                         - If the data includes information about peer interactions, analyze how these might be influencing the observed behaviors.
                         - Suggest strategies for promoting positive peer interactions if relevant.
 
-                    11. Questions for Further Investigation:
+                    10. Questions for Further Investigation:
                         - Propose 3-4 specific questions that staff should consider to gather more information about the observed behaviors.
                         - Suggest methods for collecting this additional information.
 
-                    12. Summary and Key Takeaways:
+                    11. Summary and Key Takeaways:
                         - Provide a concise summary of the most important findings and recommendations.
                         - List 3-5 key actionable takeaways for educators.
 
@@ -78,7 +72,7 @@ export const POST = async (request) => {
 `;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "user",

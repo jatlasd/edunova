@@ -12,7 +12,7 @@ export const GET = async (request, { params }) => {
   try {
     const student = await Student.findById(studentId)
     const populatedStudent =
-      await student.populate(["behaviors", "sessions", "users"]);
+      await student.populate(["sessions", "users"]);
 
     if (!populatedStudent) {
       return new Response("Student not found", { status: 404 });
