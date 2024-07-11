@@ -8,14 +8,15 @@ const TodoTableContainer = () => {
   const [todos, setTodos] = useState([]);
   const [bugs, setBugs] = useState([]);
 
+
   useEffect(() => {
     const fetchAllTodos = async () => {
       try {
         const response = await fetch("/api/todo");
         const data = await response.json();
-        const normalizedData = data.map(item => ({
+        const normalizedData = data.map((item) => ({
           ...item,
-          status: item.status === "completed" ? "completed" : "open"
+          status: item.status === "completed" ? "completed" : "open",
         }));
         setAllData(normalizedData);
       } catch (error) {
@@ -42,27 +43,33 @@ const TodoTableContainer = () => {
   const handleItemUpdate = (updatedItem) => {
     setAllData((prevData) =>
       prevData.map((item) =>
-        item._id === updatedItem._id ? updatedItem : item
-      )
+        item._id === updatedItem._id ? updatedItem : item,
+      ),
     );
   };
 
   const handleItemDelete = (deletedItemId) => {
-    setAllData((prevData) => prevData.filter((item) => item._id !== deletedItemId));
+    setAllData((prevData) =>
+      prevData.filter((item) => item._id !== deletedItemId),
+    );
   };
 
+
+
   return (
-    <div className="flex flex-col w-3/4 gap-10 mb-20">
-      <TodoTable 
-        items={todos} 
-        type="Todos" 
-        onItemUpdate={handleItemUpdate} 
+    <div className="mb-20 flex w-3/4 flex-col gap-5">
+
+      <TodoTable
+        items={todos}
+        type="Todos"
+        onItemUpdate={handleItemUpdate}
         onItemDelete={handleItemDelete}
       />
-      <TodoTable 
-        items={bugs} 
-        type="Bugs" 
-        onItemUpdate={handleItemUpdate} 
+
+      <TodoTable
+        items={bugs}
+        type="Bugs"
+        onItemUpdate={handleItemUpdate}
         onItemDelete={handleItemDelete}
       />
     </div>
