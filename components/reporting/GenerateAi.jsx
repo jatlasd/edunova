@@ -9,27 +9,34 @@ import {
 import { CircleHelp } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const PromptDetailCheckbox = ({ name, label, onChange, tooltipText }) => (
-  <div className="flex items-center gap-x-3">
-    <input
-      type="checkbox"
-      name={name}
-      onChange={(e) => onChange(name, e.target.checked)}
-    />
-    <p className="font-semibold text-primary">{label}</p>
-    {tooltipText && (
-      <Popover>
-        <PopoverTrigger asChild>
-          <CircleHelp className="w-4 h-4 text-primary  cursor-pointer" />
-        </PopoverTrigger>
-        <PopoverContent className='bg-white-1 text-primary-tint w-fit' side="right" sideOffset={10}>
-          {tooltipText}
-          
-        </PopoverContent>
-      </Popover>
-    )}
-  </div>
-);
+const PromptDetailCheckbox = ({ name, label, onChange, tooltipText }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={`flex items-center gap-x-3 p-2 rounded-md transition-colors duration-200 ${isOpen ? 'bg-primary-clear border borderprimary-clear/10' : ''}`}>
+      <input
+        type="checkbox"
+        name={name}
+        onChange={(e) => onChange(name, e.target.checked)}
+      />
+      <p className="font-semibold text-primary">{label}</p>
+      {tooltipText && (
+        <Popover onOpenChange={setIsOpen}>
+          <PopoverTrigger asChild>
+            <CircleHelp className="w-4 h-4 text-primary cursor-pointer" />
+          </PopoverTrigger>
+          <PopoverContent 
+            className={`bg-white-1 text-primary-tint max-w-[200px] border-primary-clear/10 ${isOpen ? 'bg-primary-light' : ''}`} 
+            side="right" 
+            sideOffset={10}
+          >
+            {tooltipText}
+          </PopoverContent>
+        </Popover>
+      )}
+    </div>
+  );
+};
 
 const GenerateAi = ({ session }) => {
   const [allTimestamps, setAllTimestamps] = useState([]);
@@ -44,13 +51,13 @@ const GenerateAi = ({ session }) => {
   });
 
   const promptOptions = [
-    { name: "patternsAndFrequency", label: "Patterns and Frequency" },
-    { name: "temporalTrendAnalysis", label: "Temporal Trend Analysis" },
-    { name: "antecedentAnalysis", label: "Antecedent Analysis" },
-    { name: "areasOfConcern", label: "Areas of Concern" },
-    { name: "function", label: "Function" },
-    { name: "intervention", label: "Intervention", tooltipText: "Testing!!!" },
-    { name: "environmentalConsiderations", label: "Environmental Considerations" },
+    { name: "patternsAndFrequency", label: "Patterns and Frequency", tooltipText: "Identifies recurring behaviors, calculates frequencies, and highlights top 3 most frequent behaviors." },
+    { name: "temporalTrendAnalysis", label: "Temporal Trend Analysis", tooltipText: "Analyzes behavior changes over time, identifying increasing/decreasing trends and anomalies." },
+    { name: "antecedentAnalysis", label: "Antecedent Analysis", tooltipText: "Identifies potential triggers for behaviors and ranks them by likely impact." },
+    { name: "areasOfConcern", label: "Areas of Concern", tooltipText: "Highlights behaviors needing immediate attention, ranked by frequency and impact on learning." },
+    { name: "function", label: "Function", tooltipText: "Hypothesizes possible functions for top 3 most frequent or concerning behaviors." },
+    { name: "intervention", label: "Intervention", tooltipText: "Suggests 3-5 evidence-based strategies to address pressing behavioral concerns." },
+    { name: "environmentalConsiderations", label: "Environmental Considerations", tooltipText: "Identifies environmental factors influencing behavior and suggests modifications." }
   ];
 
   useEffect(() => {

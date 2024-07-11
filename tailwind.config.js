@@ -42,6 +42,7 @@ module.exports = {
         "primary": "#26A69A",
         "primary-tint": "#1e857b",
         "primary-clear": "rgba(38, 166, 154, 0.1)",
+        "primary-light": "#E6F5F5",
         "primary-clear-tint": "rgba(30, 133, 123, 0.1)",
         "secondary": "#F75C03",
         "secondary-tint": "#DE5302",
