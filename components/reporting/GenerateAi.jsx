@@ -42,11 +42,16 @@ const GenerateAi = ({session}) => {
           },
           body: JSON.stringify({
             behaviorData: allTimestamps,
+            session: session
           }),
         });
         const data = await response.json();
         console.log(data);
       
+      }
+
+      const handleTest = () => {
+        console.log(session.notes)
       }
 
   return (

@@ -6,13 +6,21 @@ const openai = new OpenAI({
 
 export const POST = async (request) => {
   try {
-    const { behaviorData } = await request.json();
+    const { behaviorData, session } = await request.json();
 
     const prompt = `
                     You are an AI assistant with expertise in educational psychology and behavioral analysis, specializing in K-12 settings. You've been tasked with analyzing behavior tracking data for a student or group of students. Each data point includes a behavior, timestamp, notes, and a behavior description. Your goal is to provide in-depth, actionable insights for educators.
 
                     Behavior Data:
                     ${JSON.stringify(behaviorData, null, 2)}
+
+                    Please take into account the context of the session:
+                    Location: ${session.location}
+                    Subject: ${session.subject}
+                    Teacher: ${session.teacher}
+
+                    Please consider the notes, if any, the staff member recorded after the session was conducted. If any notes are available, they will be here:
+                    ${session.notes}
 
                     Please conduct a thorough analysis of this data and provide detailed insights in the following areas:
 

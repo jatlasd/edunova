@@ -46,10 +46,6 @@ const StudentBehaviorTable = ({ studentId }) => {
     }
   };
 
-  const handleClick = () => {
-    console.log(student.student.behaviors)
-  }
-
   return (
     <div
       className={`flex flex-1 flex-col rounded-md bg-primary-clear p-3 ${!student.behaviors || student.behaviors.length === 0 ? "h-30 items-center justify-center" : ""}`}

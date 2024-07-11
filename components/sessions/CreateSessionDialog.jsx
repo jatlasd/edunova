@@ -95,9 +95,7 @@ const CreateSessionDialog = () => {
       endTime: "",
       status: "Initialized",
       staff: "",
-      behaviors: [
-        { behavior: "", count: 0, timestamps: [{ time: "", notes: "" }] },
-      ],
+      behaviors: [],
     },
   });
 
@@ -108,11 +106,12 @@ const CreateSessionDialog = () => {
         const data = await response.json();
         setAllStudents(data.students);
       } catch (error) {
-        consolr.log(error.message);
+        console.log(error.message);
       }
     };
     if (student) {
       form.setValue("student", student._id);
+      setSelectedStudent(student);
     }
     if (user) {
       form.setValue("staff", user.id);
@@ -126,15 +125,15 @@ const CreateSessionDialog = () => {
   const [selectedBehaviors, setSelectedBehaviors] = useState([]);
 
   useEffect(() => {
-    if (student) {
-      const initialBehaviors = student.behaviors.map((behavior) => ({
+    if (selectedStudent) {
+      const initialBehaviors = selectedStudent.behaviors.map((behavior) => ({
         ...behavior,
         isSelected: false,
       }));
-      setBehaviors(student.behaviors);
+      setBehaviors(selectedStudent.behaviors);
       setSelectedBehaviors(initialBehaviors);
     }
-  }, [student]);
+  }, [selectedStudent]);
 
   const handleCheckboxChange = (behaviorName) => {
     setSelectedBehaviors((prevBehaviors) => {
@@ -145,6 +144,28 @@ const CreateSessionDialog = () => {
       );
       return updatedBehaviors;
     });
+  };
+
+  const handleStudentChange = async (studentId) => {
+    form.setValue("student", studentId);
+    const selectedStudent = allStudents.find((s) => s._id === studentId);
+    setSelectedStudent(selectedStudent);
+    
+    if (selectedStudent) {
+      const initialBehaviors = selectedStudent.behaviors.map((behavior) => ({
+        ...behavior,
+        isSelected: false,
+      }));
+      setBehaviors(selectedStudent.behaviors);
+      setSelectedBehaviors(initialBehaviors);
+    }
+  };
+
+  const handleClearStudent = () => {
+    form.setValue("student", "");
+    setSelectedStudent(null);
+    setBehaviors([]);
+    setSelectedBehaviors([]);
   };
 
   async function onSubmit(data, event) {
@@ -218,23 +239,35 @@ const CreateSessionDialog = () => {
                   render={({ field }) => (
                     <div className="flex flex-col gap-1.5">
                       <FormLabel className="form-label">Student</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultVaule={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a student" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="bg-white-1">
-                          {allStudents.map((student) => (
-                            <SelectItem key={student._id} value={student._id}>
-                              {student.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center space-x-2">
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleStudentChange(value);
+                          }}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a student" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-white-1">
+                            {allStudents.map((student) => (
+                              <SelectItem key={student._id} value={student._id}>
+                                {student.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <button
+                          type="button"
+                          onClick={handleClearStudent}
+                          className="btn-secondary-hollow"
+                        >
+                          Clear
+                        </button>
+                      </div>
                     </div>
                   )}
                 ></FormField>

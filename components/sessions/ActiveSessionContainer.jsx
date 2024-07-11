@@ -129,7 +129,10 @@ const ActiveSessionContainer = ({ sessionId }) => {
   return (
     <div className="flex h-full flex-col items-center">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="bg-white-1">
+        <DialogContent
+          className="bg-white-1"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-primary-tint">
               {selectedBehavior.behavior}

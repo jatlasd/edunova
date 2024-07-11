@@ -14,6 +14,9 @@ const SessionSchema = new Schema({
       },
       startTime: String,
       endTime: String,
+      location: String,
+      teacher: String,
+      subject: String,
     createdDate: {
         type: String
     },

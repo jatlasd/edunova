@@ -22,7 +22,6 @@ import {
 
 import * as React from "react";
 import { getCurrentTimeFormatted } from "@lib/utils";
-import { set } from "mongoose";
 
 const SessionDetailsContainer = ({ sessionId }) => {
   const router = useRouter();
@@ -34,6 +33,10 @@ const SessionDetailsContainer = ({ sessionId }) => {
   const [finalNotes, setFinalNotes] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(!isOpen);
+  const [sessionLocation, setSessionLocation] = useState("");
+  const [sessionTeacher, setSessionTeacher] = useState("");
+  const [sessionSubject, setSessionSubject] = useState("");
+  const [canStartSession, setCanStartSession] = useState(false);
 
   useEffect(() => {
     if (finalNotes.trim() === "") {
@@ -76,9 +79,22 @@ const SessionDetailsContainer = ({ sessionId }) => {
     }
   }, [session]);
 
+  useEffect(() => {
+    setCanStartSession(
+      sessionLocation.trim() !== "" &&
+        sessionSubject.trim() !== "" &&
+        sessionTeacher.trim() !== "",
+    );
+  }, [sessionLocation, sessionSubject, sessionTeacher]);
+
   const handleStartSession = async () => {
+    if (!canStartSession) return;
+
     const time = getCurrentTimeFormatted();
     session.startTime = time;
+    session.location = sessionLocation;
+    session.teacher = sessionTeacher;
+    session.subject = sessionSubject;
 
     try {
       const response = await fetch(`/api/session/${sessionId}`, {
@@ -156,6 +172,31 @@ const SessionDetailsContainer = ({ sessionId }) => {
                 {session.createdDate}
               </span>
             </div>
+            {session.status === "Initialized" && (
+              <div className="flex flex-col items-center gap-y-2">
+                <h1 className="my-2 text-xl font-semibold text-primary">
+                  Session Details
+                </h1>
+                <input
+                  placeholder="Location"
+                  className="rounded-md border border-primary-clear/30 p-2"
+                  onChange={(e) => setSessionLocation(e.target.value)}
+                  value={sessionLocation}
+                />
+                <input
+                  placeholder="Subject"
+                  className="rounded-md border border-primary-clear/30 p-2"
+                  onChange={(e) => setSessionSubject(e.target.value)}
+                  value={sessionSubject}
+                />
+                <input
+                  placeholder="Teacher"
+                  className="rounded-md border border-primary-clear/30 p-2"
+                  onChange={(e) => setSessionTeacher(e.target.value)}
+                  value={sessionTeacher}
+                />
+              </div>
+            )}
             {session.finishedDate && (
               <div className="ml-10 flex items-center">
                 <span className="text-lg font-bold text-primary-tint">
@@ -253,8 +294,13 @@ const SessionDetailsContainer = ({ sessionId }) => {
             <div className="flex w-1/2 items-center justify-center">
               {session.status === "Initialized" && (
                 <button
-                  className="rounded-md bg-primary px-4 py-2 font-semibold text-white-1 shadow-md hover:bg-primary-tint"
+                  className={`rounded-md border-2 px-4 py-2 text-lg font-semibold ${
+                    canStartSession
+                      ? "border-primary bg-primary text-white-1 hover:border-primary-tint hover:bg-primary-tint"
+                      : "cursor-not-allowed border-primary-tint/50 bg-white-3 text-primary/30"
+                  }`}
                   onClick={handleStartSession}
+                  disabled={!canStartSession}
                 >
                   Start Session
                 </button>
@@ -287,13 +333,19 @@ const SessionDetailsContainer = ({ sessionId }) => {
                   Delete Session
                 </button>
               </DialogTrigger>
-              <DialogContent className='bg-white-1'>
+              <DialogContent className="bg-white-1">
                 <DialogHeader>
-                  <DialogTitle className='text-primary-tint text-xl mb-5 text-center'>Delete {session.name}?</DialogTitle>
+                  <DialogTitle className="mb-5 text-center text-xl text-primary-tint">
+                    Delete {session.name}?
+                  </DialogTitle>
                 </DialogHeader>
-                <div className="flex gap-10 justify-center">
-                  <button className="btn-secondary" onClick={handleDelete}>Delete</button>
-                  <button className="btn-primary" onClick={handleOpen}>Cancel</button>
+                <div className="flex justify-center gap-10">
+                  <button className="btn-secondary" onClick={handleDelete}>
+                    Delete
+                  </button>
+                  <button className="btn-primary" onClick={handleOpen}>
+                    Cancel
+                  </button>
                 </div>
               </DialogContent>
             </Dialog>

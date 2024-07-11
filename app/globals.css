@@ -137,6 +137,9 @@ main {
   .btn-secondary {
     @apply rounded-md bg-secondary px-2 py-1 text-base text-white-1 transition-colors duration-75 hover:bg-secondary-tint
   }
+  .btn-secondary-hollow {
+    @apply rounded-md bg-white-1 border-2 border-secondary px-2 py-1 text-base text-secondary transition-all duration-75 hover:shadow-md hover:-translate-y-[1px]
+  }
 
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
