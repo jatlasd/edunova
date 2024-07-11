@@ -51,14 +51,15 @@ const GenerateAi = ({ session }) => {
   });
 
   const promptOptions = [
-    { name: "patternsAndFrequency", label: "Patterns and Frequency", tooltipText: "Identifies recurring behaviors, calculates frequencies, and highlights top 3 most frequent behaviors." },
-    { name: "temporalTrendAnalysis", label: "Temporal Trend Analysis", tooltipText: "Analyzes behavior changes over time, identifying increasing/decreasing trends and anomalies." },
-    { name: "antecedentAnalysis", label: "Antecedent Analysis", tooltipText: "Identifies potential triggers for behaviors and ranks them by likely impact." },
-    { name: "areasOfConcern", label: "Areas of Concern", tooltipText: "Highlights behaviors needing immediate attention, ranked by frequency and impact on learning." },
-    { name: "function", label: "Function", tooltipText: "Hypothesizes possible functions for top 3 most frequent or concerning behaviors." },
-    { name: "intervention", label: "Intervention", tooltipText: "Suggests 3-5 evidence-based strategies to address pressing behavioral concerns." },
-    { name: "environmentalConsiderations", label: "Environmental Considerations", tooltipText: "Identifies environmental factors influencing behavior and suggests modifications." }
+    { name: "patternsAndFrequency", label: "Patterns and Frequency", tooltipText: "Identifies recurring behaviors, calculates their frequencies, and highlights the top 3." },
+    { name: "temporalTrendAnalysis", label: "Temporal Trend Analysis", tooltipText: "Analyzes behavior changes over time, noting trends and anomalies." },
+    { name: "antecedentAnalysis", label: "Antecedent Analysis", tooltipText: "Identifies potential behavior triggers and ranks their impact." },
+    { name: "areasOfConcern", label: "Areas of Concern", tooltipText: "Highlights urgent behaviors, ranked by frequency and learning impact." },
+    { name: "function", label: "Function", tooltipText: "Hypothesizes functions for the most frequent or concerning behaviors." },
+    { name: "intervention", label: "Intervention", tooltipText: "Suggests 3-5 strategies to address pressing behavioral concerns." },
+    { name: "environmentalConsiderations", label: "Environmental Considerations", tooltipText: "Identifies environmental factors affecting behavior and suggests changes." }
   ];
+  
 
   useEffect(() => {
     if (session) {
