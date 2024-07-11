@@ -6,7 +6,7 @@ const openai = new OpenAI({
 
 export const POST = async (request) => {
   try {
-    const { behaviorData, session } = await request.json();
+    const { behaviorData, session, details } = await request.json();
 
     const prompt = `
                     You are an AI assistant with expertise in educational psychology and behavioral analysis, specializing in K-12 settings. You've been tasked with analyzing behavior tracking data for a student or group of students. Each data point includes a behavior, timestamp, notes, and a behavior description. Your goal is to provide in-depth, actionable insights for educators.
@@ -55,23 +55,15 @@ export const POST = async (request) => {
                         c) Expected outcomes
                         d) Any potential challenges in implementation
 
-                    7. Data-Driven Goals:
-                    - Propose 2-3 specific, measurable goals for behavior improvement based on the data.
-                    - Suggest how progress towards these goals could be tracked and measured.
-
-                    8. Environmental Considerations:
+                    7. Environmental Considerations:
                     - Based on the data, identify any environmental factors (classroom setup, seating arrangements, time of day, etc.) that might be influencing behavior.
                     - Suggest potential environmental modifications that could positively impact behavior.
 
-                    9. Peer Interaction Analysis:
-                        - If the data includes information about peer interactions, analyze how these might be influencing the observed behaviors.
-                        - Suggest strategies for promoting positive peer interactions if relevant.
-
-                    10. Questions for Further Investigation:
+                    8. Questions for Further Investigation:
                         - Propose 3-4 specific questions that staff should consider to gather more information about the observed behaviors.
                         - Suggest methods for collecting this additional information.
 
-                    11. Summary and Key Takeaways:
+                    9. Summary and Key Takeaways:
                         - Provide a concise summary of the most important findings and recommendations.
                         - List 3-5 key actionable takeaways for educators.
 
