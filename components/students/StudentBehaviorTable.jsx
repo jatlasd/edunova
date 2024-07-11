@@ -76,7 +76,6 @@ const StudentBehaviorTable = ({ studentId }) => {
         </DialogContent>
       </Dialog>
       <div className="flex w-full justify-center">
-        <button className="btn-primary mr-10" onClick={handleClick}>click</button>
         <AddBehavior studentId={studentId} update={update} />
       </div>
       {student.student?.behaviors && student.student.behaviors.length > 0 ? (

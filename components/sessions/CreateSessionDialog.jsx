@@ -199,7 +199,6 @@ const CreateSessionDialog = () => {
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <button onClick={() => console.log(allStudents)}>click</button>
           <DialogTitle className="text-xl text-primary-tint">
             Create New Session
           </DialogTitle>

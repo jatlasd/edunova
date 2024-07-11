@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, {
@@ -29,6 +30,7 @@ const formSchema = z.object({
 });
 
 const SignUp = () => {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,8 +56,9 @@ const SignUp = () => {
         throw new Error("Failed to sign up");
       }
 
-      const result = await response.json();
-      console.log("Signup successful:", result);
+      if(response.ok) {
+        router.push('/sign-in')
+      }
     } catch (error) {
       console.error("Signup error:", error);
     }

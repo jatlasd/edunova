@@ -104,7 +104,7 @@ const TodoTable = ({ items, type, onItemUpdate, onItemDelete }) => {
   return (
     <div className="flex flex-col items-center w-full p-4 rounded-md shadow-lg bg-white-5">
       <button
-        className={`w-fit cursor-pointer rounded-md border-2 border-primary px-2 py-1 text-sm font-semibold transition-all duration-75 mr-auto mt-3 ${showCompleted ? "bg-primary text-white-1 hover:bg-white-1 hover:text-primary" : "bg-white-1 text-primary hover:bg-primary hover:text-white-1"}`}
+        className={`w-fit cursor-pointer rounded-md border-2 border-primary px-2 py-1 text-sm font-semibold transition-all duration-150 mr-auto mt-3 ${showCompleted ? "bg-primary text-white-1 hover:bg-white-1 hover:text-primary" : "bg-white-1 text-primary hover:bg-primary hover:text-white-1"}`}
         onClick={isBugs ? handleShowCompletedBugs : handleShowCompletedTodos}
       >
         {showCompleted ? "Hide Completed" : "Show Completed"}
