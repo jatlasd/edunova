@@ -1,19 +1,26 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-
+} from "@/components/ui/popover";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { CircleHelp } from "lucide-react";
-import { useState, useEffect } from "react";
 
 const PromptDetailCheckbox = ({ name, label, onChange, tooltipText }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={`flex items-center gap-x-3 p-2 rounded-md transition-colors duration-200 ${isOpen ? 'bg-primary-clear border borderprimary-clear/10' : ''}`}>
+    <div
+      className={`flex items-center gap-x-3 rounded-md p-2 transition-colors duration-200 ${isOpen ? "borderprimary-clear/10 border bg-primary-clear" : ""}`}
+    >
       <input
         type="checkbox"
         name={name}
@@ -23,11 +30,11 @@ const PromptDetailCheckbox = ({ name, label, onChange, tooltipText }) => {
       {tooltipText && (
         <Popover onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
-            <CircleHelp className="w-4 h-4 text-primary cursor-pointer" />
+            <CircleHelp className="h-4 w-4 cursor-pointer text-primary" />
           </PopoverTrigger>
-          <PopoverContent 
-            className={`bg-white-1 text-primary-tint max-w-[200px] border-primary-clear/10 ${isOpen ? 'bg-primary-light' : ''}`} 
-            side="right" 
+          <PopoverContent
+            className={`max-w-[200px] border-primary-clear/10 bg-white-1 text-primary-tint ${isOpen ? "bg-primary-light" : ""}`}
+            side="right"
             sideOffset={10}
           >
             {tooltipText}
@@ -49,17 +56,53 @@ const GenerateAi = ({ session }) => {
     intervention: false,
     environmentalConsiderations: false,
   });
+  const [aiInsights, setAiInsights] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const promptOptions = [
-    { name: "patternsAndFrequency", label: "Patterns and Frequency", tooltipText: "Identifies recurring behaviors, calculates their frequencies, and highlights the top 3." },
-    { name: "temporalTrendAnalysis", label: "Temporal Trend Analysis", tooltipText: "Analyzes behavior changes over time, noting trends and anomalies." },
-    { name: "antecedentAnalysis", label: "Antecedent Analysis", tooltipText: "Identifies potential behavior triggers and ranks their impact." },
-    { name: "areasOfConcern", label: "Areas of Concern", tooltipText: "Highlights urgent behaviors, ranked by frequency and learning impact." },
-    { name: "function", label: "Function", tooltipText: "Hypothesizes functions for the most frequent or concerning behaviors." },
-    { name: "intervention", label: "Intervention", tooltipText: "Suggests 3-5 strategies to address pressing behavioral concerns." },
-    { name: "environmentalConsiderations", label: "Environmental Considerations", tooltipText: "Identifies environmental factors affecting behavior and suggests changes." }
+    {
+      name: "patternsAndFrequency",
+      label: "Patterns and Frequency",
+      tooltipText:
+        "Identifies recurring behaviors, calculates their frequencies, and highlights the top 3.",
+    },
+    {
+      name: "temporalTrendAnalysis",
+      label: "Temporal Trend Analysis",
+      tooltipText:
+        "Analyzes behavior changes over time, noting trends and anomalies.",
+    },
+    {
+      name: "antecedentAnalysis",
+      label: "Antecedent Analysis",
+      tooltipText:
+        "Identifies potential behavior triggers and ranks their impact.",
+    },
+    {
+      name: "areasOfConcern",
+      label: "Areas of Concern",
+      tooltipText:
+        "Highlights urgent behaviors, ranked by frequency and learning impact.",
+    },
+    {
+      name: "function",
+      label: "Function",
+      tooltipText:
+        "Hypothesizes functions for the most frequent or concerning behaviors.",
+    },
+    {
+      name: "intervention",
+      label: "Intervention",
+      tooltipText:
+        "Suggests 3-5 strategies to address pressing behavioral concerns.",
+    },
+    {
+      name: "environmentalConsiderations",
+      label: "Environmental Considerations",
+      tooltipText:
+        "Identifies environmental factors affecting behavior and suggests changes.",
+    },
   ];
-  
 
   useEffect(() => {
     if (session) {
@@ -82,36 +125,69 @@ const GenerateAi = ({ session }) => {
         return hours * 60 + minutes;
       };
 
-      combinedTimestamps.sort((a, b) => {
-        return timeToMinutes(a.time) - timeToMinutes(b.time);
-      });
+      combinedTimestamps.sort(
+        (a, b) => timeToMinutes(a.time) - timeToMinutes(b.time),
+      );
 
       setAllTimestamps(combinedTimestamps);
     }
   }, [session]);
 
   const handlePromptDetailChange = (name, checked) => {
-    setPromptDetails((prev) => ({ ...prev, [name]: checked }));
+    setPromptDetails((prev) => {
+      const newDetails = { ...prev, [name]: checked };
+      console.log("Updated prompt details:", newDetails);
+      return newDetails;
+    });
   };
 
   const handleClick = async () => {
-    const response = await fetch("/api/openai", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        behaviorData: allTimestamps,
-        session: session,
-        details: promptDetails,
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
+    setLoading(true);
+    try {
+      const selectedPrompts = promptOptions
+        .filter((option) => promptDetails[option.name])
+        .map((option) => option.name);
+
+      const response = await fetch("/api/openai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          behaviorData: allTimestamps,
+          session: session,
+          selectedPrompts: selectedPrompts,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("API response:", data);
+
+      if (data.error) {
+        console.error("Error from API:", data.error);
+        setAiInsights([]);
+      } else if (data && typeof data === "object") {
+        const insights = Object.entries(data).map(([key, value]) => ({
+          key,
+          title: key
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (l) => l.toUpperCase()),
+          content: value,
+        }));
+        setAiInsights(insights);
+        console.log(`Insights after set: ${JSON.stringify(aiInsights)}`);
+      } else {
+        console.error("Unexpected API response format", data);
+        setAiInsights([]);
+      }
+    } catch (error) {
+      console.error("Error calling API:", error);
+      setAiInsights([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="mb-20 mt-2 flex w-1/2 flex-col items-center rounded-md bg-white-2 shadow-md">
+    <div className="mb-20 mt-2 flex w-full flex-col items-center rounded-md bg-white-2 shadow-md">
       <h1 className="mt-5 w-2/5 border-b border-b-primary-clear/30 text-center text-2xl font-bold text-primary">
         AI Generated Insight
       </h1>
@@ -128,9 +204,30 @@ const GenerateAi = ({ session }) => {
         <button
           className="btn-primary mt-3 flex self-center"
           onClick={handleClick}
+          disabled={loading}
         >
-          Generate AI Insights
+          {loading ? "Generating..." : "Generate AI Insights"}
         </button>
+        {aiInsights.length > 0 && (
+          <div className="mx-auto mt-5 w-full max-w-3xl rounded-md border border-gray-300 bg-white-1 p-6">
+            <button onClick={() => console.log(aiInsights)}>click</button>
+            <h2 className="mb-4 text-2xl font-bold text-primary">
+              AI Insights
+            </h2>
+            <Accordion type="single" collapsible className="w-full space-y-2">
+              {aiInsights.map((insight) => (
+                <AccordionItem key={insight.key} value={insight.key}>
+                  <AccordionTrigger className="text-lg font-semibold">
+                    {insight.content.title}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <p>{insight.content.response}</p>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        )}
       </div>
     </div>
   );

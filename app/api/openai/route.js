@@ -6,111 +6,60 @@ const openai = new OpenAI({
 
 export const POST = async (request) => {
   const promptSections = {
-    patternsAndFrequency: `
-      Behavior Patterns and Frequency:
-      Analyze how behaviors have changed over the recorded time period.
-      Identify any behaviors that are increasing or decreasing in frequency.
-      Note any sudden changes or anomalies in behavior patterns.
-      Reasoning: Explain the trends and anomalies with reference to the data.
-    `,
-    temporalTrendAnalysis: `
-      Temporal Trend Analysis:
-      Analyze how behaviors have changed over the recorded time period.
-      Identify any behaviors that are increasing or decreasing in frequency.
-      Note any sudden changes or anomalies in behavior patterns.
-      Reasoning: Explain the trends and anomalies with reference to the data.
-    `,
-    antecedentAnalysis: `
-      Antecedent Analysis:
-      Based on the notes and descriptions, identify potential triggers or antecedents for the observed behaviors.
-      Group similar triggers and rank them by likely impact on behavior.
-      Reasoning: Justify the identified triggers and their rankings using the data.
-    `,
-    areasOfConcern: `
-      Areas of Concern:
-      Identify behaviors that require immediate attention or intervention.
-      Rank these behaviors based on their frequency and potential impact on learning.
-      For each area of concern, provide a brief explanation of why it's problematic.
-      Reasoning: Support the identification and ranking of areas of concern with data-based reasoning.
-    `,
-    function: `
-      Behavior Function Hypothesis:
-      For the top 3 most frequent or concerning behaviors, hypothesize about the possible functions (e.g., attention-seeking, escape, sensory stimulation, access to tangibles).
-      Provide reasoning for each hypothesis based on the available data.
-      Reasoning: Ground each hypothesis in the behavioral data.
-    `,
-    intervention: `
-      Intervention Recommendations:
-      Suggest 3-5 evidence-based strategies that teachers or staff could implement to address the most pressing behavioral concerns.
-      For each strategy, provide:
-      a) A brief description of the intervention
-      b) How to implement it in the classroom
-      c) Expected outcomes
-      d) Any potential challenges in implementation
-      Reasoning: Explain why these strategies are recommended based on the data.
-    `,
-    environmentalConsiderations: `
-      Environmental Considerations:
-      Based on the data, identify any environmental factors (classroom setup, seating arrangements, time of day, etc.) that might be influencing behavior.
-      Suggest potential environmental modifications that could positively impact behavior.
-      Reasoning: Use the data to support the suggested environmental changes.
-    `
+    patternsAndFrequency:
+      "Behavior Patterns and Frequency: Analyze how behaviors have changed over the recorded time period. Identify any behaviors that are increasing or decreasing in frequency. Note any sudden changes or anomalies in behavior patterns. Reasoning: Explain the trends and anomalies with reference to the data.",
+    temporalTrendAnalysis:
+      "Temporal Trend Analysis: Analyze how behaviors have changed over the recorded time period. Identify any behaviors that are increasing or decreasing in frequency. Note any sudden changes or anomalies in behavior patterns. Reasoning: Explain the trends and anomalies with reference to the data.",
+    antecedentAnalysis:
+      "Antecedent Analysis: Based on the notes and descriptions, identify potential triggers or antecedents for the observed behaviors. Group similar triggers and rank them by likely impact on behavior. Reasoning: Justify the identified triggers and their rankings using the data.",
+    areasOfConcern:
+      "Areas of Concern: Identify behaviors that require immediate attention or intervention. Rank these behaviors based on their frequency and potential impact on learning. For each area of concern, provide a brief explanation of why it's problematic. Reasoning: Support the identification and ranking of areas of concern with data-based reasoning.",
+    function:
+      "Behavior Function Hypothesis: For the top 3 most frequent or concerning behaviors, hypothesize the possible functions or reasons behind these behaviors (e.g., attention-seeking, escape, sensory stimulation). Reasoning: Explain the hypotheses with reference to the behavior data and any relevant notes.",
+    intervention:
+      "Intervention Suggestions: Based on the identified areas of concern and hypothesized behavior functions, suggest 3-5 strategies or interventions to address the most pressing behavioral concerns. Reasoning: Provide a rationale for each suggested intervention, including how it addresses the behavior and any potential challenges.",
+    environmentalConsiderations:
+      "Environmental Considerations: Identify any environmental factors (e.g., classroom layout, noise levels, schedule) that might be contributing to the observed behaviors. Suggest changes to the environment that could mitigate these factors. Reasoning: Justify the identified environmental factors and suggested changes with reference to the behavior data.",
   };
-  try {
-    const { behaviorData, session, details } = await request.json();
 
-    const prompt = `
-    You are an AI assistant with expertise in educational psychology and behavioral analysis, specializing in K-12 settings. You've been tasked with analyzing behavior tracking data for a student or group of students. Each data point includes a behavior, timestamp, notes, and a behavior description. Your goal is to provide in-depth, actionable insights for educators, including brief reasoning based on the data for all responses.
-  
-    Behavior Data:
-    ${JSON.stringify(behaviorData, null, 2)}
-  
-    Please take into account the context of the session:
-    Location: ${session.location}
-    Subject: ${session.subject}
-    Teacher: ${session.teacher}
-  
-    Please consider the notes, if any, the staff member recorded after the session was conducted. If any notes are available, they will be here:
-    ${session.notes}
-  
-    Please conduct a thorough analysis of this data and provide detailed insights in the following areas:
-  
-    ${Object.entries(details)
-      .filter(([key, value]) => value)
-      .map(([key]) => promptSections[key])
-      .join('\n\n')}
-  
-    Questions for Further Investigation:
-    Propose 3-4 specific questions that staff should consider to gather more information about the observed behaviors.
-    Suggest methods for collecting this additional information.
-    Reasoning: Explain why these questions are relevant based on the data.
-  
-    Summary and Key Takeaways:
-    Provide a concise summary of the most important findings and recommendations.
-    List 3-5 key actionable takeaways for educators.
-    Reasoning: Summarize the key points with reference to the data.
-  
-    Please present this analysis in a clear, structured format that is easily digestible for educators. Use professional but not overly technical language, focusing on practical, evidence-based insights and recommendations. Ensure all suggestions are ethical, respect student dignity, and align with positive behavior support principles.
-  `;
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+  const { behaviorData, selectedPrompts } = await request.json();
+
+  try {
+    const sectionsToInclude = selectedPrompts.map(
+      (prompt) => promptSections[prompt],
+    );
+    const prompt = `Behavior Data: ${JSON.stringify(behaviorData)}\n\n${sectionsToInclude}\n\nRespond in json format`;
+
+    const response = await openai.chat.completions.create({
       messages: [
         {
-          role: "user",
-          content: prompt,
+          role: "system",
+          content:
+            "You are a behavior analysis assistant that responds in json format. Respond in the format: [{title: title, response: response}, ...] where the title is the detail such as 'Antecedent Analysis' or 'Patterns and Frequency', and response is the complete response. Each response should only have one object. only title and response.",
         },
+        { role: "user", content: prompt },
       ],
+      model: "gpt-3.5-turbo",
+      temperature: 0.5,
+      max_tokens: 3000,
     });
-    if (completion.choices[0].message.content) {
-      console.log(completion.choices[0].message.content);
-      return new Response(
-        JSON.stringify({ insight: completion.choices[0].message.content }),
-        { status: 200 },
-      );
-    }
+
+    const completion = response.choices[0]?.message?.content;
+    const jsonResponse = JSON.parse(completion);
+
+    return new Response(JSON.stringify(jsonResponse), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-    });
+    console.error("Error calling OpenAI API:", error);
+
+    return new Response(
+      JSON.stringify({ error: "Failed to generate insights" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   }
 };
