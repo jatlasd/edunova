@@ -13,7 +13,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { CircleHelp } from "lucide-react";
-
 const PromptDetailCheckbox = ({ name, label, onChange, tooltipText }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,8 +68,7 @@ const GenerateAi = ({ session }) => {
     {
       name: "temporalTrendAnalysis",
       label: "Temporal Trend Analysis",
-      tooltipText:
-        "Analyzes behavior changes over time, noting trends and anomalies.",
+      tooltipText: "Analyzes behavior changes over time, noting trends.",
     },
     {
       name: "antecedentAnalysis",
@@ -95,12 +93,6 @@ const GenerateAi = ({ session }) => {
       label: "Intervention",
       tooltipText:
         "Suggests 3-5 strategies to address pressing behavioral concerns.",
-    },
-    {
-      name: "environmentalConsiderations",
-      label: "Environmental Considerations",
-      tooltipText:
-        "Identifies environmental factors affecting behavior and suggests changes.",
     },
   ];
 
@@ -173,7 +165,7 @@ const GenerateAi = ({ session }) => {
           content: value,
         }));
         setAiInsights(insights);
-        console.log(`Insights after set: ${JSON.stringify(aiInsights)}`);
+        setIsInsightsGenerated(true);
       } else {
         console.error("Unexpected API response format", data);
         setAiInsights([]);
@@ -209,19 +201,18 @@ const GenerateAi = ({ session }) => {
           {loading ? "Generating..." : "Generate AI Insights"}
         </button>
         {aiInsights.length > 0 && (
-          <div className="mx-auto mt-5 w-full max-w-3xl rounded-md border border-gray-300 bg-white-1 p-6">
-            <button onClick={() => console.log(aiInsights)}>click</button>
-            <h2 className="mb-4 text-2xl font-bold text-primary">
+          <div className="mx-auto mt-5 flex w-full max-w-3xl flex-col items-center rounded-md bg-white-1 p-6 shadow-md">
+            <h2 className="mb-4 w-1/3 border-b border-b-primary-clear/30 text-center text-2xl font-bold text-primary">
               AI Insights
             </h2>
             <Accordion type="single" collapsible className="w-full space-y-2">
               {aiInsights.map((insight) => (
                 <AccordionItem key={insight.key} value={insight.key}>
-                  <AccordionTrigger className="text-lg font-semibold">
+                  <AccordionTrigger className="text-lg font-semibold text-primary">
                     {insight.content.title}
                   </AccordionTrigger>
                   <AccordionContent>
-                    <p>{insight.content.response}</p>
+                    <p className="ml-2">{insight.content.response}</p>
                   </AccordionContent>
                 </AccordionItem>
               ))}
