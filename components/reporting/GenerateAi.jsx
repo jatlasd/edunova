@@ -165,7 +165,6 @@ const GenerateAi = ({ session }) => {
           content: value,
         }));
         setAiInsights(insights);
-        setIsInsightsGenerated(true);
       } else {
         console.error("Unexpected API response format", data);
         setAiInsights([]);

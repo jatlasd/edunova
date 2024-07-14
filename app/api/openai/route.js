@@ -37,13 +37,17 @@ export const POST = async (request) => {
         },
         { role: "user", content: prompt },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       temperature: 0.5,
       max_tokens: 3000,
     });
   
     const completion = response.choices[0]?.message?.content;
-    const jsonResponse = JSON.parse(completion);
+
+    // Sanitize the response to remove bad control characters
+    const sanitizedCompletion = completion.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
+
+    const jsonResponse = JSON.parse(sanitizedCompletion);
   
     return new Response(JSON.stringify(jsonResponse), {
       status: 200,
@@ -57,4 +61,4 @@ export const POST = async (request) => {
       headers: { "Content-Type": "application/json" },
     });
   }
-  };
+};
