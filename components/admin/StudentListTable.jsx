@@ -1,41 +1,125 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useRouter } from "next/navigation";
+import Loading from "@components/Loading";
+import MultipleSelect from "./MultipleSelect";
 
 const StudentListTable = ({ staffId }) => {
-  const [students, setStudents] = useState([]);
-  useEffect(() => {
-    fetch(`/api/user/${staffId}?includeStudents=true`)
-      .then((res) => res.json())
-      .then((data) => setStudents(data));
-  }, []);
-  return (
-    <div className=" w-1/3 h-full overflow-auto rounded-md bg-primary-clear p-10">
-      <div className="flex flex-col">
-        <div className="mb-4 flex justify-between">
-          <h2 className="text-2xl font-bold text-primary">Student List</h2>
-          <button className="text-primary hover:text-primary-tint">Edit</button>
-        </div>
-        <div className="flex flex-col ">
-          {students.map((student) => (
-            <div key={student._id} className="mb-4 flex justify-between">
-              <span className="text-lg font-semibold text-primary-tint">
-                Name:{" "}
-                <span className="font-normal capitalize">{student.name}</span>
-              </span>
-              <span className="text-lg font-semibold text-primary-tint">
-                Age:{" "}
-                <span className="font-normal capitalize">{student.age}</span>
-              </span>
-              <span className="text-lg font-semibold text-primary-tint">
-                Grade:{" "}
-                <span className="font-normal capitalize">{student.grade}</span>
-              </span>
-            </div>
-          ))}
+  const router = useRouter();
+  const [staffStudents, setStaffStudents] = useState([]);
+  const [allStudents, setAllStudents] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
-        </div>
-      </div>
+  useEffect(() => {
+    const fetchStaffStudents = async () => {
+      setLoading(true);
+      const response = await fetch(`/api/user/${staffId}`);
+      const data = await response.json();
+      setStaffStudents(data.students);
+      setSelectedStudents(data.students.map(student => student._id));
+      setLoading(false);
+    };
+    const fetchAllStudents = async () => {
+      setLoading(true);
+      const response = await fetch("/api/student");
+      const data = await response.json();
+      setAllStudents(data);
+      setLoading(false);
+    };
+    fetchStaffStudents();
+    fetchAllStudents();
+  }, [staffId]);
+
+  const handleStudentSelect = (selectedIds) => {
+    setSelectedStudents(selectedIds);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const response = await fetch(`/api/user/${staffId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ students: selectedStudents }),
+      });
+
+      if (response.ok) {
+        const updatedStaffStudents = allStudents.filter(student => 
+          selectedStudents.includes(student._id)
+        );
+        setStaffStudents(updatedStaffStudents);
+        setIsEditing(false);
+      } else {
+        console.error('Failed to update students');
+      }
+    } catch (error) {
+      console.error('Error updating students:', error);
+    }
+  };
+
+  return (
+    <div className="flex h-full w-1/2 flex-col items-center rounded-md bg-primary-clear p-10">
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="flex w-full justify-between mb-2">
+            <h2 className="text-2xl font-bold text-primary">Student List</h2>
+            <button
+              className="ml-auto cursor-pointer text-sm text-primary transition-colors duration-75 hover:text-primary-tint"
+              onClick={() => isEditing ? handleSaveChanges() : setIsEditing(true)}
+            >
+              {isEditing ? "Save" : "Edit"}
+            </button>
+          </div>
+          {isEditing ? (
+            <MultipleSelect 
+              options={allStudents.map(student => ({
+                value: student._id,
+                label: student.name
+              }))}
+              selectedValues={selectedStudents}
+              onChange={handleStudentSelect}
+              placeholder="Select students"
+            />
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow isHeader={true}>
+                  <TableHead className="w-[60%]">Name</TableHead>
+                  <TableHead>Age</TableHead>
+                  <TableHead>Grade</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {staffStudents.map((student) => (
+                  <TableRow
+                    key={student._id}
+                    onClick={() => router.push(`/students/${student._id}`)}
+                    className="cursor-pointer"
+                  >
+                    <TableCell>{student.name}</TableCell>
+                    <TableCell>{student.age}</TableCell>
+                    <TableCell>{student.grade}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </>
+      )}
     </div>
   );
 };
