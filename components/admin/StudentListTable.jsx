@@ -99,7 +99,7 @@ const StudentListTable = ({ staffId }) => {
   };
   return (
     <div className="flex h-full w-1/2 flex-col items-center rounded-md bg-primary-clear p-10">
-      {loading ? (
+      {!loading ? (
         <Loading />
       ) : (
         <>
