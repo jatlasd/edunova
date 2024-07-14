@@ -41,7 +41,7 @@ const MultipleSelect = ({ options, selectedValues, onChange, placeholder = "Sele
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
         className="flex w-full items-center justify-between rounded-md border border-primary/30 bg-white-1 px-4 py-2 text-left text-sm font-medium shadow-sm"

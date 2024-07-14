@@ -27,7 +27,7 @@ const StudentListTable = ({ staffId }) => {
       const response = await fetch(`/api/user/${staffId}`);
       const data = await response.json();
       setStaffStudents(data.students);
-      setSelectedStudents(data.students.map(student => student._id));
+      setSelectedStudents(data.students.map((student) => student._id));
       setLoading(false);
     };
     const fetchAllStudents = async () => {
@@ -48,75 +48,118 @@ const StudentListTable = ({ staffId }) => {
   const handleSaveChanges = async () => {
     try {
       const response = await fetch(`/api/user/${staffId}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ students: selectedStudents }),
       });
 
-      if (response.ok) {
-        const updatedStaffStudents = allStudents.filter(student => 
-          selectedStudents.includes(student._id)
-        );
-        setStaffStudents(updatedStaffStudents);
-        setIsEditing(false);
-      } else {
-        console.error('Failed to update students');
+      if (!response.ok) {
+        throw new Error("Failed to update user's students");
       }
+
+      const updatedStaffStudents = allStudents.filter((student) =>
+        selectedStudents.includes(student._id),
+      );
+      setStaffStudents(updatedStaffStudents);
+
+      await Promise.all(
+        allStudents.map(async (student) => {
+          const isSelected = selectedStudents.includes(student._id);
+          const userIndex = student.users.findIndex(
+            (user) => user._id === staffId,
+          );
+          const userExists = userIndex !== -1;
+
+          if ((isSelected && !userExists) || (!isSelected && userExists)) {
+            const updatedUsers = isSelected
+              ? [...student.users, { _id: staffId }]
+              : student.users.filter((user) => user._id !== staffId);
+
+            const updateResponse = await fetch(`/api/student/${student._id}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ users: updatedUsers }),
+            });
+
+            if (!updateResponse.ok) {
+              throw new Error(`Failed to update student ${student._id}`);
+            }
+          }
+        }),
+      );
+
+      setIsEditing(false);
     } catch (error) {
-      console.error('Error updating students:', error);
+      throw error;
     }
   };
-
   return (
     <div className="flex h-full w-1/2 flex-col items-center rounded-md bg-primary-clear p-10">
       {loading ? (
         <Loading />
       ) : (
         <>
-          <div className="flex w-full justify-between mb-2">
+          <div className="mb-2 flex w-full justify-between">
             <h2 className="text-2xl font-bold text-primary">Student List</h2>
+            <div>
+            {isEditing && (
+              <button
+                className="mr-5 cursor-pointer text-sm text-primary transition-colors duration-75 hover:text-primary-tint"
+                onClick={handleSaveChanges}
+              >
+                Save Changes
+              </button>
+            )}
             <button
-              className="ml-auto cursor-pointer text-sm text-primary transition-colors duration-75 hover:text-primary-tint"
-              onClick={() => isEditing ? handleSaveChanges() : setIsEditing(true)}
+              className={`ml-auto cursor-pointer text-sm transition-colors duration-75 ${isEditing ? 'text-secondary/80 hover:text-secondary-tint' : 'text-primary hover:text-primary-tint'}`}
+              onClick={() =>
+                isEditing ? setIsEditing(false) : setIsEditing(true)
+              }
             >
-              {isEditing ? "Save" : "Edit"}
+              {isEditing ? "Cancel" : "Edit"}
             </button>
+            </div>
+
           </div>
-          {isEditing ? (
-            <MultipleSelect 
-              options={allStudents.map(student => ({
+          <Table>
+            <TableHeader>
+              <TableRow isHeader={true}>
+                <TableHead className="w-[60%]">Name</TableHead>
+                <TableHead>Age</TableHead>
+                <TableHead>Grade</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {staffStudents.map((student) => (
+                <TableRow
+                  key={student._id}
+                  onClick={() => router.push(`/students/${student._id}`)}
+                  className="cursor-pointer"
+                >
+                  <TableCell>{student.name}</TableCell>
+                  <TableCell>{student.age}</TableCell>
+                  <TableCell>{student.grade}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {isEditing && (
+            <div className="flex flex-col items-center gap-y-5 mt-5 w-2/3">
+              <h2 className="text-2xl font-semibold text-primary">Edit Student List</h2>
+              <MultipleSelect
+              options={allStudents.map((student) => ({
                 value: student._id,
-                label: student.name
+                label: student.name,
               }))}
               selectedValues={selectedStudents}
               onChange={handleStudentSelect}
               placeholder="Select students"
             />
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow isHeader={true}>
-                  <TableHead className="w-[60%]">Name</TableHead>
-                  <TableHead>Age</TableHead>
-                  <TableHead>Grade</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {staffStudents.map((student) => (
-                  <TableRow
-                    key={student._id}
-                    onClick={() => router.push(`/students/${student._id}`)}
-                    className="cursor-pointer"
-                  >
-                    <TableCell>{student.name}</TableCell>
-                    <TableCell>{student.age}</TableCell>
-                    <TableCell>{student.grade}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            </div>
           )}
         </>
       )}
