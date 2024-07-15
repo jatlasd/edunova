@@ -99,31 +99,30 @@ const StudentListTable = ({ staffId }) => {
   };
   return (
     <div className="flex h-full w-1/2 flex-col items-center rounded-md bg-primary-clear p-10">
-      {!loading ? (
+      {loading ? (
         <Loading />
       ) : (
         <>
           <div className="mb-2 flex w-full justify-between">
             <h2 className="text-2xl font-bold text-primary">Student List</h2>
             <div>
-            {isEditing && (
+              {isEditing && (
+                <button
+                  className="mr-5 cursor-pointer text-sm text-secondary transition-colors duration-75 hover:text-secondary-tint"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </button>
+              )}
               <button
-                className="mr-5 cursor-pointer text-sm text-primary transition-colors duration-75 hover:text-primary-tint"
-                onClick={handleSaveChanges}
+                className="ml-auto cursor-pointer text-sm text-primary transition-colors duration-75 hover:text-primary-tint"
+                onClick={() =>
+                  isEditing ? handleSaveChanges() : setIsEditing(true)
+                }
               >
-                Save Changes
+                {isEditing ? "Save Changes" : "Edit"}
               </button>
-            )}
-            <button
-              className={`ml-auto cursor-pointer text-sm transition-colors duration-75 ${isEditing ? 'text-secondary/80 hover:text-secondary-tint' : 'text-primary hover:text-primary-tint'}`}
-              onClick={() =>
-                isEditing ? setIsEditing(false) : setIsEditing(true)
-              }
-            >
-              {isEditing ? "Cancel" : "Edit"}
-            </button>
             </div>
-
           </div>
           <Table>
             <TableHeader>
@@ -148,17 +147,19 @@ const StudentListTable = ({ staffId }) => {
             </TableBody>
           </Table>
           {isEditing && (
-            <div className="flex flex-col items-center gap-y-5 mt-5 w-2/3">
-              <h2 className="text-2xl font-semibold text-primary">Edit Student List</h2>
+            <div className="mt-5 flex w-2/3 flex-col items-center gap-y-5">
+              <h2 className="text-2xl font-semibold text-primary">
+                Edit Student List
+              </h2>
               <MultipleSelect
-              options={allStudents.map((student) => ({
-                value: student._id,
-                label: student.name,
-              }))}
-              selectedValues={selectedStudents}
-              onChange={handleStudentSelect}
-              placeholder="Select students"
-            />
+                options={allStudents.map((student) => ({
+                  value: student._id,
+                  label: student.name,
+                }))}
+                selectedValues={selectedStudents}
+                onChange={handleStudentSelect}
+                placeholder="Select students"
+              />
             </div>
           )}
         </>
