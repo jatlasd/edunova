@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/select";
 
 import { Trash2Icon, X } from "lucide-react";
+import Loading from "@components/Loading";
 
 const QuickNotesTable = () => {
+  const [loading, setLoading] = useState(false)
   const [details, setDetails] = useState([]);
   const { user, setUser } = useGlobalContext();
   const [editingNote, setEditingNote] = useState({
@@ -39,9 +41,11 @@ const QuickNotesTable = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
+      setLoading(true)
       const response = await fetch(`/api/user/${user.id}`);
       const data = await response.json();
       setDetails(data.quickNotes);
+      setLoading(false)
     };
     const fetchAllBehaviors = async () => {
       const response = await fetch("/api/behavior");
@@ -171,7 +175,10 @@ const QuickNotesTable = () => {
         <span className="mt-4 flex self-center text-3xl font-bold text-primary-tint">
           Quick Notes
         </span>
-        <Accordion type="single" collapsible className="mx-5">
+        {loading ? (
+          <Loading className="my-10"/>
+        ) : (
+          <Accordion type="single" collapsible className="mx-5">
           {details.map((detail) => (
             <AccordionItem
               key={detail._id}
@@ -343,6 +350,8 @@ const QuickNotesTable = () => {
             </AccordionItem>
           ))}
         </Accordion>
+
+        )}
         {isAddNewBehavior ? (
           <div className="mx-5 mb-5 mt-4 flex items-center gap-4">
             <Select onValueChange={(value) => setNewBehaviorText(value)}>
