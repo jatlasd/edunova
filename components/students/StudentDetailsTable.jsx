@@ -218,7 +218,7 @@ const StudentDetailsTable = ({}) => {
                   )}
                 </div>
               </div>
-              <div className="flex w-full justify-evenly">
+              <div className="flex w-full justify-evenly mb-5">
                 <button
                   className="cursor-pointer rounded-md bg-primary px-2 py-1 font-semibold text-white-1 shadow-md transition-colors duration-75 hover:bg-primary-tint"
                   onClick={handleSubmit}

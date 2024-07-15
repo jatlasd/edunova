@@ -63,7 +63,7 @@ const SignIn = () => {
       setUser(result.user);
       setIsLoggedIn(true);
       localStorage.setItem("user", JSON.stringify(result.user)); 
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       setErrorMessage("An error occurred. Please try again later.");

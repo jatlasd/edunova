@@ -21,6 +21,7 @@ export const POST = async (request) => {
   };
   
   const { behaviorData, selectedPrompts } = await request.json();
+  console.log(`inapiroute: ${JSON.stringify(behaviorData)}`)
   
   try {
     const sectionsToInclude = selectedPrompts.map(
@@ -44,7 +45,6 @@ export const POST = async (request) => {
   
     const completion = response.choices[0]?.message?.content;
 
-    // Sanitize the response to remove bad control characters
     const sanitizedCompletion = completion.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
 
     const jsonResponse = JSON.parse(sanitizedCompletion);
