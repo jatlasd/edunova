@@ -6,6 +6,7 @@ import { GlobalProvider } from "@/lib/GlobalProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@components/ui/toaster";
 import { StudentProvider } from "@lib/StudentProvider";
+import Notes from "@components/todos/Notes";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ const RootLayout = ({ children }) => {
         )}
       >
         <GlobalProvider>
+          <Notes/>
           <main className="h-full">
             <Navbar />
             <StudentProvider>
